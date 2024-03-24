@@ -65,8 +65,10 @@ public class IntListExercises {
      * @param lst IntList from Lecture
      * @return True if there was an update to the list
      */
+
+    static boolean finalPrime = true;
     public static boolean squarePrimes(IntList lst) {
-        boolean finalPrime = true;
+
         // Base Case: we have reached the end of the list
         if (lst == null&&!finalPrime) {
             return false;
