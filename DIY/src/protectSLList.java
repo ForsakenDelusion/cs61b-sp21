@@ -24,7 +24,7 @@ public class protectSLList {
     }
 
     public void addFirst(int x ){
-        first = new intNode(x,first);0
+        first = new intNode(x,first);
         size+=1;
     }
 
@@ -80,9 +80,8 @@ public class protectSLList {
 
     public static void main(String args[]){
         protectSLList list = new protectSLList();
-        list.myAddLast(15);
-        System.out.println(list.first.elem);
-        System.out.println(list.size());
+        list.addFirst(15);
+        list.addFirst(10);
 
 
     }
