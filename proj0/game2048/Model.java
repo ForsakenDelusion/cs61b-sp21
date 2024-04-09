@@ -113,6 +113,11 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        for(int j=3;j>0;j--){
+            for(int i=3;i>0;i--){
+
+            }
+        }
 
         checkGameOver();
         if (changed) {
