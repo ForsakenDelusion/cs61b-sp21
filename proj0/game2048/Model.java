@@ -178,16 +178,39 @@ public class Model extends Observable {
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
         int size = b.size();
-        int col,raw;
-    if(emptySpaceExists(b)){
-        return true;
-    }
-    else
+        int col, raw;
+
+        if (emptySpaceExists(b) || maxTileExists(b)) {
+            return true;
+        }
+
+        int[][] checkBoard = new int[size + 2][size + 2];
+        for(int i=0;i<size+2;i++){
+            for(int j=0;j<size+2;j++){
+                checkBoard [i][j]=1;
+            }
+        }
+
+        for(int i=1;i<size+1;i++){
+            for(int j=1;j<size+1;j++){
+                checkBoard [i][j] = b.tile(i-1,j-1).value();
+            }
+        }
+
+        for(int i=1;i<size+1;i++){
+            for(int j=1;j<size+1;j++){
+                if(     checkBoard[i][j]==checkBoard[i][j+1]||
+                        checkBoard[i][j]==checkBoard[i][j-1]||
+                        checkBoard[i][j]==checkBoard[i+1][j]||
+                        checkBoard[i][j]==checkBoard[i-1][j]
+                )
+                    return true;
+            }
+        }
 
         return false;
+
     }
-
-
     @Override
      /** Returns the model as a string, used for debugging. */
     public String toString() {
