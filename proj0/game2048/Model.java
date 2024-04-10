@@ -118,37 +118,37 @@ public class Model extends Observable {
         // changed local variable to true.
         for(int i=3;i>=0;i--){
             for(int j=3;j>0;j--){
-                int temp = j;
+                int temp = j;//保存当前节点(后文称为入口节点),方便后续移动操作
                 int tempValue = 0;
-                if(board.tile(i,j)==null){
+                if(board.tile(i,j)==null){//当前节点为空,就一直检测下一个节点,直到节点不为空或者遍历完当前列
                     while(j-1>0&&board.tile(i,j-1)==null){
                         j-=1;
-                    }if(board.tile(i,j-1)!=null){
+                    }if(board.tile(i,j-1)!=null){//如果检测停下来的节点不为空,就将其移动到入口节点处
                     board.move(i,temp,board.tile(i,j-1));
-                    tempValue=board.tile(i,temp).value();
+                    tempValue=board.tile(i,temp).value();//暂存刚刚移动的节点的值,为后续可能合并作准备
                     changed = true;
                     }
-                    while(j-1>0&&board.tile(i,j-1)==null){
+                    while(j-1>0&&board.tile(i,j-1)==null){//如果上一步没有遍历完列,就继续遍历,直到节点不为空或者遍历完
                         j-=1;
                     }if(board.tile(i,j-1)!=null) {
-                        if (board.tile(i, j-1 ).value() == tempValue) {
-                            board.move(i, temp, board.tile(i, j-1));
+                        if (board.tile(i, j-1 ).value() == tempValue) {//如果节点不为空,比较检测停下来的节点和刚刚暂存的节点的值
+                            board.move(i, temp, board.tile(i, j-1));//如果相同就合并
                             changed = true;
                             score=score+2*tempValue;
                         }
                     }
 
                 }
-                else{
-                    while(j-1>0&&board.tile(i,j-1)==null){
+                else{//当前节点不为空
+                    while(j-1>0&&board.tile(i,j-1)==null){//一直检测下一个节点,直到节点不为空或者遍历完当前列
                         j-=1;
                     }if(board.tile(i,j-1)!=null&&board.tile(i,temp)!=null) {
-                        if (board.tile(i,j-1).value() == board.tile(i, temp).value()) {
+                        if (board.tile(i,j-1).value() == board.tile(i, temp).value()) {//如果停下来时的节点的值与入口节点相等,就合并
                             board.move(i, temp, board.tile(i,j-1));
                             changed = true;
                             score=score+board.tile(i, temp).value();
                         } else {
-                            board.move(i, temp-1, board.tile(i,j-1));
+                            board.move(i, temp-1, board.tile(i,j-1));//不相等,就移动到入口节点的下一个节点
                             changed = true;
                         }
                     }
