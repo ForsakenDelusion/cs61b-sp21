@@ -60,6 +60,9 @@ public class ArrayDeque<T> {
     }
 
     public T removeFirst(){
+        if(isEmpty()){
+            return null;
+        }
         T elem = array[0];
         System.arraycopy(array,1,array,0,size-1);
         size-=1;
@@ -68,6 +71,9 @@ public class ArrayDeque<T> {
     }
 
     public T removeLast(){
+        if(isEmpty()){
+            return null;
+        }
         T elem =array[size-1];
         size-=1;
         cleaner();
