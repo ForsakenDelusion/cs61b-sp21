@@ -17,6 +17,8 @@ public class LinkedListDeque<T> {
     int size;
     public LinkedListDeque(){
         sentinel = new Node<>(null,null,null);
+        sentinel.next = sentinel;
+        sentinel.pri = sentinel;
         size = 0;
     }
 
@@ -59,10 +61,11 @@ public class LinkedListDeque<T> {
     public void printDeque(){
         int count = size;
         Node<T> curNode = sentinel.next;
-        for(;size>0;size--){
-            System.out.println(curNode.elem);
+        for(;count>0;count--){
+            System.out.print(curNode.elem+" ");
             curNode = curNode.next;
         }
+        System.out.println();
     }
 
     public T removeFirst(){
@@ -103,6 +106,30 @@ public class LinkedListDeque<T> {
             curNode = curNode.next;
         }
         return curNode.elem;
+    }
+
+
+
+    public LinkedListDeque(LinkedListDeque other){
+        sentinel = new Node<>(null,null,null);
+        sentinel.next = sentinel;
+        sentinel.pri = sentinel;
+
+        for(int i = 0;i < other.size();i++){
+            addLast((T)other.get(i));
+        }
+    }
+
+    public T getRecursive(int index){
+        int count = index+1;
+        Node<T> curNode = sentinel;
+        if(count==0){
+            return curNode.elem;
+        }
+        else{
+            count-=1;
+            return this.get(count);
+        }
     }
 }
 
