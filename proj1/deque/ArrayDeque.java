@@ -89,4 +89,8 @@ public class ArrayDeque<T> {
          array = newArray;
     }
 
+    public ArrayDeque(ArrayDeque other){
+
+    }
+
 }
