@@ -1,6 +1,6 @@
 package deque;
 
-public class LinkedListDeque<T> {
+public class LinkedListDeque<T> implements Deque<T> {
     class Node<T>{
         T elem;
         Node<T> pri;
@@ -13,8 +13,8 @@ public class LinkedListDeque<T> {
         }
     }
 
-    Node<T> sentinel;
-    int size;
+    private Node<T> sentinel;
+    private int size;
     public LinkedListDeque(){
         sentinel = new Node<>(null,null,null);
         sentinel.next = sentinel;
