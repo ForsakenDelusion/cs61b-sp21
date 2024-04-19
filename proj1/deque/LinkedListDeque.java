@@ -1,6 +1,13 @@
 package deque;
 
-public class LinkedListDeque<T> implements Deque<T> {
+import java.util.Iterator;
+
+public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
+    @Override
+    public Iterator<T> iterator() {
+        return null;
+    }
+
     class Node<T>{
         T elem;
         Node<T> pri;

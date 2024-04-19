@@ -2,7 +2,9 @@ package deque;
 
 import afu.org.checkerframework.checker.oigj.qual.O;
 
-public class ArrayDeque<T> implements Deque<T> {
+import java.util.Iterator;
+
+public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     int size;
     T[] array;
     public ArrayDeque(){
@@ -99,4 +101,8 @@ public class ArrayDeque<T> implements Deque<T> {
 
     }
 
+    @Override
+    public Iterator<T> iterator() {
+        return null;
+    }
 }
