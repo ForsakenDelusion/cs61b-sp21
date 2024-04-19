@@ -18,7 +18,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
             System.arraycopy(cleanerArray,0,array,size,cleanerArray.length);
         }
     }
-
+    @Override
     public void addFirst(T item){
         if(size>=array.length){
             resize();
@@ -28,7 +28,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
         curArray[0] = item;
         size+=1;
     }
-
+    @Override
     public void addLast(T item){
         if(isEmpty()){
             addFirst(item);//省懒
@@ -44,15 +44,15 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
         }
 
     }
-
+    @Override
     public boolean isEmpty(){
         return size()==0;
     }
-
+    @Override
     public int size(){
         return size;
     }
-
+    @Override
     public void printDeque(){
         int curIndex = 0;
         for(;curIndex<size;curIndex++) {
@@ -60,7 +60,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
         }
         System.out.println();
     }
-
+    @Override
     public T removeFirst(){
         if(isEmpty()){
             return null;
@@ -71,7 +71,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
         cleaner();
         return elem;
     }
-
+    @Override
     public T removeLast(){
         if(isEmpty()){
             return null;
@@ -81,7 +81,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
         cleaner();
         return elem;
     }
-
+    @Override
     public T get(int index){
         if(array[index]!=null){
             return array[index];
@@ -105,4 +105,31 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     public Iterator<T> iterator() {
         return null;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null) {
+            return false;
+        }
+
+        if (!(o instanceof Deque)) {
+            return false;
+        }
+
+        Deque<T> other = (Deque<T>) o;
+        if (this.size() != other.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < size(); i++) {
+            if (!this.get(i).equals(other.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
