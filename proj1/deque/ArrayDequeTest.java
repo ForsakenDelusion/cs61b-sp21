@@ -48,10 +48,10 @@ public class ArrayDequeTest {
         arrayTest.removeFirst();
 
         String errorMsg = "size不对";
-        errorMsg += "size()返回的是"+arrayTest.size+"\n";
+        errorMsg += "size()返回的是"+arrayTest.size()+"\n";
         errorMsg += "实际的size()应该返回0";
 
-        assertEquals(errorMsg,0,arrayTest.size);
+        assertEquals(errorMsg,0,arrayTest.size());
 
     }
 

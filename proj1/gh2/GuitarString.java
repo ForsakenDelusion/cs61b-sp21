@@ -6,7 +6,7 @@ package gh2;
 
 import deque.ArrayDeque;
 import deque.Deque;
-import deque.ArrayDeque;
+
 
 //Note: This file will not compile until you complete the Deque implementations
 public class GuitarString{

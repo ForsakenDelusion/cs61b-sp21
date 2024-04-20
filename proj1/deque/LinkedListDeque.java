@@ -2,18 +2,18 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
+public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public Iterator<T> iterator() {
         return null;
     }
 
-    class Node<T>{
+    private class Node<T> {
         T elem;
         Node<T> pri;
         Node<T> next;
 
-        public Node(T elem,Node<T> pri,Node<T> next){
+        public Node(T elem, Node<T> pri ,Node<T> next) {
             this.elem = elem;
             this.pri = pri;
             this.next = next;
@@ -22,42 +22,40 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
 
     private Node<T> sentinel;
     private int size;
-    public LinkedListDeque(){
-        sentinel = new Node<>(null,null,null);
+    public LinkedListDeque() {
+        sentinel = new Node<>(null, null, null);
         sentinel.next = sentinel;
         sentinel.pri = sentinel;
         size = 0;
     }
     @Override
-    public void addFirst(T item){
-        if(this.isEmpty()){
-            sentinel.next = new Node<>(item,sentinel,sentinel.pri);
+    public void addFirst(T item) {
+        if (this.isEmpty()) {
+            sentinel.next = new Node<>(item, sentinel, sentinel.pri);
             sentinel.pri = sentinel.next;
-            sentinel.next.next=sentinel;
-        }
-        else{
+            sentinel.next.next = sentinel;
+        } else {
             Node<T> curNode = sentinel.next;
-            sentinel.next = new Node<>(item,sentinel,curNode);
+            sentinel.next = new Node<>(item, sentinel, curNode);
             curNode.pri = sentinel.next;
         }
-        size+=1;
+        size += 1;
     }
     @Override
     public void addLast(T item){
-        if(this.isEmpty()){
-            sentinel.next = new Node<>(item,sentinel,sentinel.pri);
+        if(this.isEmpty()) {
+            sentinel.next = new Node<>(item, sentinel, sentinel.pri);
             sentinel.pri = sentinel.next;
             sentinel.next.next=sentinel;
-        }
-        else{
+        } else {
             Node<T> curNode = sentinel.pri;
-            curNode.next = new Node<>(item,curNode,sentinel);
+            curNode.next = new Node<>(item, curNode, sentinel);
             sentinel.pri = curNode.next;
         }
-        size+=1;
+        size += 1;
     }
     @Override
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return size()==0;
     }
     @Override
@@ -65,10 +63,10 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
         return size;
     }
     @Override
-    public void printDeque(){
+    public void printDeque() {
         int count = size;
         Node<T> curNode = sentinel.next;
-        for(;count>0;count--){
+        for (;count > 0;count--){
             System.out.print(curNode.elem+" ");
             curNode = curNode.next;
         }
@@ -76,15 +74,14 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
     }
     @Override
     public T removeFirst(){
-        if(this.isEmpty()){
+        if (this.isEmpty()) {
             return null;
-        }
-        else{
+        } else{
             T removeElem;
             removeElem = sentinel.next.elem;
             sentinel.next = sentinel.next.next;
-            sentinel.next.pri=sentinel;
-            size-=1;
+            sentinel.next.pri = sentinel;
+            size -= 1;
             return removeElem;
         }
     }
