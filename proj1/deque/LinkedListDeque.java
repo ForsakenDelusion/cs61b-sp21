@@ -54,10 +54,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         }
         size += 1;
     }
-    @Override
-    public boolean isEmpty() {
-        return size()==0;
-    }
+
     @Override
     public int size(){
         return size;
@@ -112,17 +109,6 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return curNode.elem;
     }
 
-
-
-    public LinkedListDeque(LinkedListDeque other){
-        sentinel = new Node<>(null,null,null);
-        sentinel.next = sentinel;
-        sentinel.pri = sentinel;
-
-        for(int i = 0;i < other.size();i++){
-            addLast((T)other.get(i));
-        }
-    }
 
     public T getRecursive(int index){
         int count = index+1;
