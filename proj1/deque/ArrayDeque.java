@@ -2,19 +2,17 @@ package deque;
 
 import java.util.Iterator;
 
-import java.util.Iterator;
-
 public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
-    int size;
-    T[] array;
+    private int size;
+    private T[] array;
     public ArrayDeque(){
         array = (T [])new Object[8];
         size = 0;
     }
 
-    public void cleaner(){
+    private void cleaner(){
         if((double) size /array.length<0.25){
-            T[] cleanerArray = (T []) new Object[array.length-size];
+            T[] cleanerArray = (T[]) new Object[array.length-size];
             System.arraycopy(cleanerArray,0,array,size,cleanerArray.length);
         }
     }
@@ -32,8 +30,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     public void addLast(T item){
         if(isEmpty()){
             addFirst(item);//省懒
-        }
-        else{
+        } else {
             if(size>=array.length){
                 resize();
             }
@@ -91,7 +88,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     }
 
 
-    public void resize(){
+    private void resize(){
          T[] newArray = (T[]) new Object[array.length*2];
          System.arraycopy(array,0,newArray,0,size);
          array = newArray;
