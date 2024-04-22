@@ -160,6 +160,7 @@ public class LinkedListDequeTest {
         System.out.println(lld1.get(2));
         lld1.removeLast();
         System.out.println(lld1.get(1));
+        System.out.println(lld1.get(0));
 
     }
 
