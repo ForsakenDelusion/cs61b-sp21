@@ -94,9 +94,30 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
 
     @Override
-    public Iterator<T> iterator() {
-        return null;
+    public Iterator<T> iterator()  {
+        return new ArrayIterator();
     }
+
+    private class ArrayIterator implements Iterator<T> {
+        int index;
+
+        public ArrayIterator(){
+            index = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < size;
+        }
+
+        @Override
+        public T next() {
+            T returnElem = array[index];
+            index += 1;
+            return returnElem;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
