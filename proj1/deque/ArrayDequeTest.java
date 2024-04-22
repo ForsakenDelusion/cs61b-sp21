@@ -70,6 +70,7 @@ public class ArrayDequeTest {
         boolean b = array3.removeFirst();
     }
 
+    @Test
     public void bigArrayDequeTest(){
 
         ArrayDeque<Integer> arrayTest = new ArrayDeque<>();
@@ -84,6 +85,20 @@ public class ArrayDequeTest {
         for (double i = 999999; i > 500000; i--) {
             assertEquals("应该具有相同的值", i, (double) arrayTest.removeLast(), 0.0);
         }
+    }
+
+    @Test
+    public void testIterator(){
+        ArrayDeque<Integer> arrayTest = new ArrayDeque<>();
+        arrayTest.addFirst(1);
+        arrayTest.addFirst(2);
+        arrayTest.addFirst(3);
+        arrayTest.addFirst(4);
+
+        for(Integer i : arrayTest){
+            System.out.println(i);
+        }
+
     }
 
 }

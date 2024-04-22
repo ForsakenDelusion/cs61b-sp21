@@ -5,7 +5,27 @@ import java.util.Iterator;
 public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return new LinkedListIterator();
+    }
+
+    private class LinkedListIterator implements Iterator<T> {
+        int index;
+
+        LinkedListIterator() {
+            index = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < size;
+        }
+
+        @Override
+        public T next() {
+            T returnElem = get(index+1); //因为有sentinel，所以要加1
+            index += 1;
+            return returnElem;
+        }
     }
 
     private class Node<T> {

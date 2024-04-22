@@ -131,5 +131,21 @@ public class LinkedListDequeTest {
 
 
     }
+
+    @Test
+    public void testIterator(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        lld1.addFirst(1);
+        lld1.addFirst(2);
+        lld1.addFirst(3);
+        lld1.addFirst(4);
+
+        for(Integer i : lld1){
+            System.out.println(i);
+        }
+
+
+
+    }
 }
 
