@@ -22,7 +22,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
         @Override
         public T next() {
-            T returnElem = get(index+1); //因为有sentinel，所以要加1
+            T returnElem = get(index + 1); //因为有sentinel，所以要加1
             index += 1;
             return returnElem;
         }
@@ -33,7 +33,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         Node<T> pri;
         Node<T> next;
 
-        public Node(T elem, Node<T> pri, Node<T> next) {
+        Node(T elem, Node<T> pri, Node<T> next) {
             this.elem = elem;
             this.pri = pri;
             this.next = next;
