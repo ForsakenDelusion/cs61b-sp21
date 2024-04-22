@@ -55,4 +55,5 @@ public interface Deque<T> {
      * Print whole deque.
      */
     void printDeque();
+
 }
