@@ -152,7 +152,14 @@ public class LinkedListDequeTest {
     public void getFirst(){
         LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
         lld1.addFirst(1);
-        System.out.println(lld1.get(0));
+        lld1.addFirst(2);
+        lld1.addFirst(3);
+        lld1.addFirst(4);
+        System.out.println(lld1.get(3));
+        lld1.removeFirst();
+        System.out.println(lld1.get(2));
+        lld1.removeLast();
+        System.out.println(lld1.get(1));
 
     }
 
