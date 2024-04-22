@@ -147,5 +147,20 @@ public class LinkedListDequeTest {
 
 
     }
+
+    @Test
+    public void getFirst(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        lld1.addFirst(1);
+        System.out.println(lld1.get(0));
+
+    }
+
+    @Test
+    public void getRecursiveTest(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        lld1.addFirst(0);
+        System.out.println(lld1.getRecursive(0));
+    }
 }
 

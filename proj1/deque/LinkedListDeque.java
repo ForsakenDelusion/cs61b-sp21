@@ -125,7 +125,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
             }
             curNode = curNode.next;
         }
-        return curNode.elem;
+        return curNode.pri.elem;
     }
 
 
