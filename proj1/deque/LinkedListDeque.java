@@ -119,7 +119,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public T get(int index) {
         Node<T> curNode = sentinel;
-        for (; index > 0; index--) {
+        for (; index >= 0; index--) {
             if (curNode.next == null) {
                 return null;
             }
