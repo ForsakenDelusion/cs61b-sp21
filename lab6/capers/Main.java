@@ -1,13 +1,15 @@
 package capers;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.Arrays;
 
 import static capers.Utils.*;
 
 /** Canine Capers: A Gitlet Prelude.
  * @author TODO
 */
-public class Main {
+public class Main{
     /**
      * Runs one of three commands:
      * story [text] -- Appends "text" + a newline to a story file in the
