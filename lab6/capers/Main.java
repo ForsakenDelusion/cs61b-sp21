@@ -45,6 +45,9 @@ public class Main{
 
         CapersRepository.setupPersistence();
         String text;
+        String dogBreed;
+        String dogNname;
+        int dogAge;
         switch (args[0]) {
         case "story":
             /* This call has been handled for you. The rest will be similar. */
@@ -53,12 +56,18 @@ public class Main{
             CapersRepository.writeStory(text);
             break;
         case "dog":
-            validateNumArgs("dog", args, 4);
             // TODO: make a dog
+            validateNumArgs("dog", args, 4);
+            dogNname = args[1];
+            dogBreed = args[2];
+            dogAge = Integer.parseInt(args[3]);
+            CapersRepository.makeDog(dogNname,dogBreed,dogAge);
             break;
         case "birthday":
             validateNumArgs("birthday", args, 2);
             // TODO: celebrate this dog's birthday
+            dogNname = args[1];
+            CapersRepository.celebrateBirthday(dogNname);
             break;
         default:
             exitWithError(String.format("Unknown command: %s", args[0]));

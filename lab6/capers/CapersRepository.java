@@ -48,7 +48,6 @@ public class CapersRepository {
         File file = new File(CAPERS_FOLDER,"story");
         if (!file.exists()) {
             writeContents(file,text);
-
         } else {
             String beforetext = readContentsAsString(file);
             writeContents(file,beforetext+"\n"+text);
@@ -65,8 +64,10 @@ public class CapersRepository {
      */
     public static void makeDog(String name, String breed, int age) {
         // TODO
-
-
+        Dog dog = new Dog(name, breed, age);
+        File file = new File(Dog.DOG_FOLDER,name);
+        dog.saveDog();
+        System.out.println(dog);
     }
 
     /**
@@ -77,5 +78,9 @@ public class CapersRepository {
      */
     public static void celebrateBirthday(String name) {
         // TODO
+        File file = new File(Dog.DOG_FOLDER,name);
+        Dog curDog = Dog.fromFile(name);
+        curDog.haveBirthday();
+        curDog.saveDog();
     }
 }
