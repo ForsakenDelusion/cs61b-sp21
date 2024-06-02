@@ -26,4 +26,11 @@ public class Repository {
     public static final File GITLET_DIR = join(CWD, ".gitlet");
 
     /* TODO: fill in the rest of this class. */
+    static void init(){
+        GITLET_DIR.mkdir();
+    }
+
+    static void add(String fileName){
+
+    }
 }
