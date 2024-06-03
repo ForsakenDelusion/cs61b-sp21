@@ -1,6 +1,8 @@
 package gitlet;
 
 import java.io.File;
+import java.util.Date;
+
 import static gitlet.Utils.*;
 
 // TODO: any imports you need here
@@ -25,12 +27,26 @@ public class Repository {
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
 
+    public static final File GITLET_STAGING_DIR = join(GITLET_DIR, "gitlet-staging");
+
+    public static final File GITLET_COMMIT = join(GITLET_DIR, "gitlet-commit");
+
     /* TODO: fill in the rest of this class. */
     static void init(){
         GITLET_DIR.mkdir();
+        GITLET_STAGING_DIR.mkdir();
+        writeObject(GITLET_COMMIT,new Commit());
     }
 
     static void add(String fileName){
-
+        File addFile = new File(CWD, fileName);
+        File alreadyExists = new File(GITLET_STAGING_DIR, fileName);
+        writeContents(alreadyExists, readContentsAsString(addFile));
     }
+
+    static void commit(String message){
+        Commit.addNewCommit(message);
+    }
+
+
 }
