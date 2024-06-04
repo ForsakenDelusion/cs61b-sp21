@@ -42,7 +42,7 @@ public class Repository {
         GITLET_DIR.mkdir();
         GITLET_OBJECTS.mkdir();
         GITLET_REFERENCE.mkdir();
-        writeObject(GITLET_HEAD, new Commit());
+        writeContents(GITLET_HEAD, new Commit().getId());
         writeObject(GITLET_INDEX, new Index());
     }
 
@@ -53,6 +53,12 @@ public class Repository {
             Index.add(Blob.createBlob(fileName));
         }
 
+    }
+
+    /** Create a new commit and update the HEAD reference */
+    static void commit(String message) {
+        Commit commit = new Commit(message);
+        Commit.updateHEAD(commit);
     }
 
 }

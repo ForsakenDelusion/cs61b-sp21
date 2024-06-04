@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.*;
 
-import static gitlet.Repository.GITLET_DIR;
+import static gitlet.Repository.*;
 import static gitlet.Utils.*;
 
 /** Represents a gitlet commit object.
@@ -36,19 +36,32 @@ public class Commit implements Serializable {
     Commit(String message) {
         this.message = message;
         this.date = new Date().toString();
-        this.branch = getCurrentCommit().getBranch();
-        this.parentCommit = getCurrentCommit().getId();
+        this.branch = getCommitById(getCurrentCommit()).getBranch();
+        this.parentCommit = getCommitById(getCurrentCommit()).getId();
+        blobs.addAll(readObject(GITLET_INDEX, Index.class).getBlobArray());
+        setID();
+        saveCommit();
     }
 
+    /** Init Commit constructor */
     Commit() {
+        this.message = "List<Object> vals = new ArrayList<Object>();";
         this.date = "00:00:00 UTC, Thursday, 1 January 1970";
         this.branch = "master";
-        this.parentCommit = null;
+        this.parentCommit = "null";
+        setID();
+        saveCommit();
     }
 
     /** Get current commit */
-    static Commit getCurrentCommit() {
-        return readObject(join(GITLET_DIR,"HEAD"),Commit.class);
+    static String getCurrentCommit() {
+        return readContentsAsString(GITLET_HEAD);
+    }
+
+    /** Get a Commit by ID */
+    static Commit getCommitById(String id) {
+        File curCommitFile = join(GITLET_OBJECTS,id);
+        return readObject(curCommitFile,Commit.class);
     }
 
     /** parentId getter */
@@ -56,16 +69,38 @@ public class Commit implements Serializable {
         return this.parentCommit;
     }
 
-    /** Id getter */
-    String getId() {
-        return this.id;
-    }
 
     /** Branch getter */
     String getBranch() {
         return this.branch;
     }
 
+    /** Save the Commit obj (Persistence) */
+    void saveCommit(){
+        writeObject(join(GITLET_OBJECTS,getId()),this);
+    }
 
+    /** Id getter */
+    String getId() {
+        return this.id;
+    }
+
+    /** Set the commit id using sha1 */
+    void setID() {
+        List<Object> vals = new ArrayList<Object>();
+        vals.add(this.message);
+        vals.add(this.parentCommit);
+        vals.add(this.date);
+        vals.add(this.branch);
+        for(Blob b : blobs) {
+            vals.add(b.toString());
+        }
+        this.id = sha1(vals);
+    }
+
+    /** update the HEAD to the given commit */
+    static void updateHEAD(Commit commit){
+        writeContents(GITLET_HEAD,commit.getId());
+    }
 
 }
