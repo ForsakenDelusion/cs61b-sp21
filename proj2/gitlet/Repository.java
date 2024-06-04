@@ -28,21 +28,26 @@ public class Repository {
     public static final File GITLET_DIR = join(CWD, ".gitlet");
     public static final File GITLET_OBJECTS = join(GITLET_DIR, "objects");
     public static final File GITLET_REFERENCE = join(GITLET_DIR, "refs");
+    public static final File GITLET_HEAD = join(GITLET_DIR, "HEAD");
+    public static final File GITLET_INDEX = join(GITLET_DIR, "index");
 
 
     /* TODO: fill in the rest of this class. */
     static void init(){
+        if(GITLET_OBJECTS.exists()){
+            System.out.println("A Gitlet version-control system already exists in the current directory.");
+            return ;
+        }
         GITLET_DIR.mkdir();
         GITLET_OBJECTS.mkdir();
         GITLET_REFERENCE.mkdir();
-        writeContents(new File("HEAD"), new Commit());
-
+        writeObject(GITLET_HEAD, new Commit());
+        writeContents(GITLET_INDEX, "");
     }
 
-    /** Get current commit */
-    static Commit getCurrentCommit() {
 
 
-    }
+
+
 
 }
