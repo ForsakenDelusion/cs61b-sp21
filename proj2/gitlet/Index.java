@@ -9,21 +9,28 @@ import static gitlet.Utils.*;
 
 public class Index implements Serializable {
 
-    ArrayList<Blob> blobArry = new ArrayList<>();
+    ArrayList<Blob> blobArray = new ArrayList<>();
 
+    /** When the Repository.init() be called this constructor will save an empty List in Index */
     Index(){
         this.saveIndex();
     }
 
-    public ArrayList<Blob> getBlobArry() {
-        return this.blobArry;
+    /** blobArray getter */
+    public ArrayList<Blob> getBlobArray() {
+        return this.blobArray;
     }
 
-    static void add(Blob blob){
-        readObject(GITLET_INDEX,Index.class).getBlobArry().add(blob);
+    /** Add a new blob into the blobArray */
+    static void add(Blob blob) {
+        if(blob == null){
+            return;
+        }
+        readObject(GITLET_INDEX,Index.class).getBlobArray().add(blob);
     }
 
-    void saveIndex(){
+    /** Serialize the index obj */
+    void saveIndex() {
         writeObject(GITLET_INDEX,Index.class);
     }
 }
