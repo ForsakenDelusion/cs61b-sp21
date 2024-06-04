@@ -4,10 +4,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.Date; // TODO: You'll likely use this in this class
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static gitlet.Repository.GITLET_DIR;
 import static gitlet.Utils.*;
@@ -33,17 +30,17 @@ public class Commit implements Serializable {
     String parentCommit;
     String branch;
     String date;
-    Map<String, Blob> Blobs = new HashMap<>();
+    ArrayList<Blob> blobs = new ArrayList<>();
     /* TODO: fill in the rest of this class. */
 
-    Commit(String message){
+    Commit(String message) {
         this.message = message;
         this.date = new Date().toString();
         this.branch = getCurrentCommit().getBranch();
         this.parentCommit = getCurrentCommit().getId();
     }
 
-    Commit(){
+    Commit() {
         this.date = "00:00:00 UTC, Thursday, 1 January 1970";
         this.branch = "master";
         this.parentCommit = null;
@@ -55,17 +52,17 @@ public class Commit implements Serializable {
     }
 
     /** parentId getter */
-    String getParentCommit(){
+    String getParentCommit() {
         return this.parentCommit;
     }
 
     /** Id getter */
-    String getId(){
+    String getId() {
         return this.id;
     }
 
     /** Branch getter */
-    String getBranch(){
+    String getBranch() {
         return this.branch;
     }
 
