@@ -33,6 +33,7 @@ public class Repository {
 
 
     /* TODO: fill in the rest of this class. */
+    /** init repo */
     static void init(){
         if(GITLET_OBJECTS.exists()){
             System.out.println("A Gitlet version-control system already exists in the current directory.");
@@ -42,12 +43,12 @@ public class Repository {
         GITLET_OBJECTS.mkdir();
         GITLET_REFERENCE.mkdir();
         writeObject(GITLET_HEAD, new Commit());
-        writeContents(GITLET_INDEX, "");
+        writeObject(GITLET_INDEX, new Index());
     }
 
-
-
-
-
+    /** copy the work file into .gitlet/object dictionary and create an index */
+    static void add(String fileName) {
+        Index.add(Blob.createBlob(fileName));
+    }
 
 }
