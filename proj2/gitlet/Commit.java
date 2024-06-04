@@ -45,6 +45,7 @@ public class Commit implements Serializable {
 
     Commit(){
         this.date = "00:00:00 UTC, Thursday, 1 January 1970";
+        this.branch = "master";
         this.parentCommit = null;
     }
 
