@@ -26,36 +26,7 @@ public class Commit implements Serializable {
      */
 
     /** The message of this Commit. */
-    private String message;
-    private Map<File, Blob> Blobs = new HashMap<File, Blob>();
-    private Commit parentCommit;
-    private Date commitTime;
 
     /* TODO: fill in the rest of this class. */
-    public Commit(String message){
-        this.message = message;
-        this.commitTime = new Date();
-        this.parentCommit = getCurrentCommit();
-    }
 
-    public Commit(){
-        this.commitTime = new Date();
-        this.parentCommit = null;
-    }
-
-    public static void addNewCommit(String message){
-        Commit curCommit = fromFile();
-        curCommit.message = message;
-        curCommit.commitTime = new Date();
-        curCommit.parentCommit = getCurrentCommit();
-        writeObject(Repository.GITLET_COMMIT,curCommit);
-    }
-
-    private static Commit getCurrentCommit() {
-        return readObject(Repository.GITLET_COMMIT,Commit.class);
-    }
-
-    private static Commit fromFile(){
-        return readObject(Repository.GITLET_COMMIT, Commit.class);
-    }
 }
