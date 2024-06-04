@@ -33,4 +33,9 @@ public class Index implements Serializable {
     void saveIndex() {
         writeObject(GITLET_INDEX,Index.class);
     }
+
+    /** Reset the index */
+    static void resetIndex(){
+        writeObject(GITLET_INDEX,new Index());
+    }
 }

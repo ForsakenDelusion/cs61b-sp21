@@ -57,8 +57,13 @@ public class Repository {
 
     /** Create a new commit and update the HEAD reference */
     static void commit(String message) {
-        Commit commit = new Commit(message);
-        Commit.updateHEAD(commit);
+        if (!readObject(GITLET_INDEX, Index.class).getBlobArray().isEmpty()) {
+            Commit commit = new Commit(message);
+            Commit.updateHEAD(commit);
+            Index.resetIndex();
+            return;
+        }
+        System.out.println("No changes added to the commit.");
     }
 
 }
