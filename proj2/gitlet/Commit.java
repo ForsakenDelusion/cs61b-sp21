@@ -26,7 +26,12 @@ public class Commit implements Serializable {
      */
 
     /** The message of this Commit. */
-
+    String message;
+    String parentCommit;
+    String branch;
+    Map<String, Blob> Blobs = new HashMap<>();
     /* TODO: fill in the rest of this class. */
+
+
 
 }

@@ -25,9 +25,24 @@ public class Repository {
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
+    public static final File GITLET_DIR = join(CWD, ".gitlet");
+    public static final File GITLET_OBJECTS = join(GITLET_DIR, "objects");
+    public static final File GITLET_REFERENCE = join(GITLET_DIR, "refs");
 
 
     /* TODO: fill in the rest of this class. */
+    static void init(){
+        GITLET_DIR.mkdir();
+        GITLET_OBJECTS.mkdir();
+        GITLET_REFERENCE.mkdir();
+        writeContents(new File("HEAD"), new Commit());
 
+    }
+
+    /** Get current commit */
+    static Commit getCurrentCommit() {
+
+
+    }
 
 }
