@@ -83,4 +83,8 @@ public class Repository {
 
     }
 
+    static void log(){
+        Commit.log();
+    }
+
 }

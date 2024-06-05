@@ -45,7 +45,7 @@ public class Commit implements Serializable {
 
     /** Init Commit constructor */
     Commit() {
-        this.message = "List<Object> vals = new ArrayList<Object>();";
+        this.message = "initial commit";
         this.date = "00:00:00 UTC, Thursday, 1 January 1970";
         this.branch = "master";
         this.parentCommit = "null";
@@ -108,6 +108,14 @@ public class Commit implements Serializable {
         writeContents(GITLET_HEAD,commit.getId());
     }
 
+    String getMessage() {
+        return this.message;
+    }
+
+    String getDate() {
+        return this.date;
+    }
+
     /** Remove the same Hash obj in blobs */
     void removeInBlobArray(Blob blob) {
         String hashId = blob.getHashId();
@@ -126,4 +134,24 @@ public class Commit implements Serializable {
         return false;
     }
 
+    static void log(){
+        Commit tempCommit = getCurrentCommit();
+        while (true) {
+            String curCommitID = tempCommit.getId();
+            String curCommitMessage = tempCommit.getMessage();
+            String curCommitDate = tempCommit.getDate();
+            System.out.println("===");
+            System.out.println("commit " + curCommitID);
+            System.out.println("Date: " + curCommitDate);
+            System.out.println(curCommitMessage);
+            System.out.println();
+            // Check if the parent commit ID is a "null" string, and stop the loop if it is
+            String parentCommitId = tempCommit.getParentCommit();
+            if ("null".equals(parentCommitId)) {
+                break;
+            }
+            // loop
+            tempCommit = getCommitById(parentCommitId);
+        }
+    }
 }
