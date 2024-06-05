@@ -53,13 +53,34 @@ public class Repository {
 
     /** Create a new commit and update the HEAD reference */
     static void commit(String message) {
-        if (!Index.getCurrentIndex().blobArrayIsEmpty()) {
+        if(message == null) {
+            System.out.println("Please enter a commit message.");
+            return;
+        }
+        if (!Index.getCurrentIndex().getBlobArray().isEmpty()) {
             Commit commit = new Commit(message);
             Commit.updateHEAD(commit);
             Index.resetIndex();
             return;
         }
         System.out.println("No changes added to the commit.");
+    }
+
+    /** The rm command */
+    static void rm(String fileName) {
+        Index curIndex = Index.getCurrentIndex();
+        Blob curBlob = new Blob(fileName);
+        Commit curCommit = Commit.getCurrentCommit();
+        if(!curIndex.getBlobArray().isEmpty()) {
+            curIndex.removeInBlobArray(curBlob);
+        } else {
+            if(curCommit.containsSameHashBlob(curBlob)) {
+                curIndex.addInBlobArray(curBlob);
+                curCommit.removeInBlobArray(curBlob);
+                Utils.restrictedDelete(join(CWD,fileName));
+            } else System.out.println("No reason to remove the file.");
+        }
+
     }
 
 }

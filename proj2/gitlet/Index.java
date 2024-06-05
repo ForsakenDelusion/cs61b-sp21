@@ -41,13 +41,15 @@ public class Index implements Serializable {
         writeObject(GITLET_INDEX,this);
     }
 
-    /** IsEmpty function */
-    boolean blobArrayIsEmpty(){
-        return this.blobArray.isEmpty();
-    }
-
     /** Reset the index */
     static void resetIndex(){
         writeObject(GITLET_INDEX,new Index());
+    }
+
+    /** Remove the same Hash obj in BlobArray */
+    void removeInBlobArray(Blob blob) {
+        String hashId = blob.getHashId();
+        this.getBlobArray().removeIf(b -> b.getHashId().equals(hashId));
+        this.saveIndex();
     }
 }
