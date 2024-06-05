@@ -4,6 +4,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static gitlet.Repository.*;
@@ -32,10 +33,11 @@ public class Commit implements Serializable {
     String date;
     ArrayList<Blob> blobs = new ArrayList<>();
     /* TODO: fill in the rest of this class. */
+    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy Z");
 
     Commit(String message) {
         this.message = message;
-        this.date = new Date().toString();
+        this.date = dateFormat.format(new Date());
         this.branch = getCurrentCommit().getBranch();
         this.parentCommit = getCurrentCommit().getId();
         blobs.addAll(Index.getCurrentIndex().getBlobArray());
@@ -46,7 +48,7 @@ public class Commit implements Serializable {
     /** Init Commit constructor */
     Commit() {
         this.message = "initial commit";
-        this.date = "00:00:00 UTC, Thursday, 1 January 1970";
+        this.date = dateFormat.format(new Date(0));
         this.branch = "master";
         this.parentCommit = "null";
         setID();
