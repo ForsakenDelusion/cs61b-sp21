@@ -30,6 +30,7 @@ public class Repository {
     public static final File GITLET_REFERENCE = join(GITLET_DIR, "refs");
     public static final File GITLET_HEAD = join(GITLET_DIR, "HEAD");
     public static final File GITLET_INDEX = join(GITLET_DIR, "index");
+    public static final File GITLET_COMMIT = join(GITLET_DIR, "commit");
 
 
     /* TODO: fill in the rest of this class. */
@@ -42,6 +43,7 @@ public class Repository {
         GITLET_DIR.mkdir();
         GITLET_OBJECTS.mkdir();
         GITLET_REFERENCE.mkdir();
+        GITLET_COMMIT.mkdir();
         writeContents(GITLET_HEAD, new Commit().getId());
         writeObject(GITLET_INDEX, new Index());
     }
@@ -85,6 +87,10 @@ public class Repository {
 
     static void log(){
         Commit.log();
+    }
+
+    static void globalLog(){
+        Commit.globalLog();
     }
 
 }

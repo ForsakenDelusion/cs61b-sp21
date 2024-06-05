@@ -62,7 +62,7 @@ public class Commit implements Serializable {
 
     /** Get a Commit by ID */
     static Commit getCommitById(String id) {
-        File curCommitFile = join(GITLET_OBJECTS,id);
+        File curCommitFile = join(GITLET_COMMIT,id);
         return readObject(curCommitFile,Commit.class);
     }
 
@@ -79,7 +79,7 @@ public class Commit implements Serializable {
 
     /** Save the Commit obj (Persistence) */
     void saveCommit(){
-        writeObject(join(GITLET_OBJECTS,getId()),this);
+        writeObject(join(GITLET_COMMIT,getId()),this);
     }
 
     /** Id getter */
@@ -136,17 +136,22 @@ public class Commit implements Serializable {
         return false;
     }
 
+    static void printCommit(Commit commit) {
+        String curCommitID = commit.getId();
+        String curCommitMessage = commit.getMessage();
+        String curCommitDate = commit.getDate();
+        System.out.println("===");
+        System.out.println("commit " + curCommitID);
+        System.out.println("Date: " + curCommitDate);
+        System.out.println(curCommitMessage);
+        System.out.println();
+    }
+
+    /** The log command */
     static void log(){
         Commit tempCommit = getCurrentCommit();
         while (true) {
-            String curCommitID = tempCommit.getId();
-            String curCommitMessage = tempCommit.getMessage();
-            String curCommitDate = tempCommit.getDate();
-            System.out.println("===");
-            System.out.println("commit " + curCommitID);
-            System.out.println("Date: " + curCommitDate);
-            System.out.println(curCommitMessage);
-            System.out.println();
+            printCommit(tempCommit);
             // Check if the parent commit ID is a "null" string, and stop the loop if it is
             String parentCommitId = tempCommit.getParentCommit();
             if ("null".equals(parentCommitId)) {
@@ -154,6 +159,13 @@ public class Commit implements Serializable {
             }
             // loop
             tempCommit = getCommitById(parentCommitId);
+        }
+    }
+
+    static void globalLog(){
+        List<String> files = plainFilenamesIn(GITLET_COMMIT);
+        for (String filename : files) {
+            printCommit(getCommitById(filename));
         }
     }
 }
