@@ -48,16 +48,12 @@ public class Repository {
 
     /** copy the work file into .gitlet/object dictionary and create an index */
     static void add(String fileName) {
-        File file = join(GITLET_OBJECTS, fileName);
-        if(!file.exists()) {
-            Index.add(Blob.createBlob(fileName));
-        }
-
+            Index.getCurrentIndex().addInBlobArray(Blob.createBlob(fileName));
     }
 
     /** Create a new commit and update the HEAD reference */
     static void commit(String message) {
-        if (!readObject(GITLET_INDEX, Index.class).getBlobArray().isEmpty()) {
+        if (!Index.getCurrentIndex().blobArrayIsEmpty()) {
             Commit commit = new Commit(message);
             Commit.updateHEAD(commit);
             Index.resetIndex();

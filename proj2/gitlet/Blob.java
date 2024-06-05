@@ -36,7 +36,8 @@ public class Blob implements Serializable {
         }
         String content = readContentsAsString(CWDFile);
         Blob newBlob =  new Blob(fileName,content);
-        newBlob.saveBlob();
+        File blobObj = join(GITLET_OBJECTS,newBlob.getHashId());
+        if (!blobObj.exists()) newBlob.saveBlob();
         return newBlob;
     }
 
