@@ -26,6 +26,12 @@ public class Blob implements Serializable {
         setID();
     }
 
+    public Blob(String fileName){
+        this.fileName = fileName;
+        this.content = readContentsAsString(join(CWD,fileName));
+        setID();
+    }
+
 
     /** create a new Blob obj and save it in the objects dictionary then return this Blob obj */
     static Blob createBlob(String fileName){
@@ -58,4 +64,24 @@ public class Blob implements Serializable {
     public void saveBlob() {
         writeObject(join(GITLET_OBJECTS,this.getHashId()),this);
     }
+
+    static Blob findBlobByFileName(String fileName) {
+        File CWDFile = new File(CWD,fileName);
+        String content = readContentsAsString(CWDFile);
+        Blob newBlob =  new Blob(fileName,content);
+        File blobObj = join(GITLET_OBJECTS,newBlob.getHashId());
+        if (blobObj.exists())  return readObject(blobObj,Blob.class);
+        return null;
+    }
+
+    static void deleteBlobInObject(Blob blob) {
+        String hashId = blob.getHashId();
+        File searchBlob = join(GITLET_OBJECTS,hashId);
+        if(searchBlob.exists()) {
+            Utils.restrictedDelete(searchBlob);
+        } else {
+            System.out.println("No reason to remove the file.");
+        }
+    }
+
 }

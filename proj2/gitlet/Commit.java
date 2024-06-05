@@ -36,9 +36,9 @@ public class Commit implements Serializable {
     Commit(String message) {
         this.message = message;
         this.date = new Date().toString();
-        this.branch = getCommitById(getCurrentCommit()).getBranch();
-        this.parentCommit = getCommitById(getCurrentCommit()).getId();
-        blobs.addAll(readObject(GITLET_INDEX, Index.class).getBlobArray());
+        this.branch = getCurrentCommit().getBranch();
+        this.parentCommit = getCurrentCommit().getId();
+        blobs.addAll(Index.getCurrentIndex().getBlobArray());
         setID();
         saveCommit();
     }
@@ -54,8 +54,8 @@ public class Commit implements Serializable {
     }
 
     /** Get current commit */
-    static String getCurrentCommit() {
-        return readContentsAsString(GITLET_HEAD);
+    static Commit getCurrentCommit() {
+        return getCommitById(readContentsAsString(GITLET_HEAD));
     }
 
     /** Get a Commit by ID */
@@ -85,6 +85,11 @@ public class Commit implements Serializable {
         return this.id;
     }
 
+    /** BlobArray getter */
+    List<Blob> getBlobs() {
+        return this.blobs;
+    }
+
     /** Set the commit id using sha1 */
     void setID() {
         List<Object> vals = new ArrayList<Object>();
@@ -99,8 +104,26 @@ public class Commit implements Serializable {
     }
 
     /** update the HEAD to the given commit */
-    static void updateHEAD(Commit commit){
+    static void updateHEAD(Commit commit) {
         writeContents(GITLET_HEAD,commit.getId());
+    }
+
+    /** Remove the same Hash obj in blobs */
+    void removeInBlobArray(Blob blob) {
+        String hashId = blob.getHashId();
+        this.getBlobs().removeIf(b -> b.getHashId().equals(hashId));
+        this.saveCommit();
+    }
+
+    /** Check for obj of the same hash in blobs */
+    boolean containsSameHashBlob(Blob blob) {
+        String hashId = blob.getHashId();
+        for(Blob b : blobs) {
+            if(b.getHashId().equals(hashId)){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
