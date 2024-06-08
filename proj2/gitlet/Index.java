@@ -76,4 +76,9 @@ public class Index implements Serializable {
         }
         this.saveIndex();
     }
+
+    void removeInBlobSet(File file) {
+        this.getBlobSet().remove(file);
+        this.saveIndex();
+    }
 }

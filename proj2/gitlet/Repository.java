@@ -53,9 +53,16 @@ public class Repository {
     /** copy the work file into .gitlet/object dictionary and create an index */
     static void add(String fileName) {
         File curFile = new File(CWD, fileName);
+        Index curIndex = Index.getCurrentIndex();
         if(!curFile.exists()) {
             System.out.println("File does not exist.");
-        } else Index.getCurrentIndex().addInBlobSet(curFile,Blob.createBlob(fileName));
+        } else {
+            if (curIndex.getDeleteBlobs().containsKey(curFile)){
+                curIndex.removeInBlobSet(curFile);
+                curIndex.addInBlobSet(curFile,Blob.createBlob(fileName));
+            } curIndex.addInBlobSet(curFile,Blob.createBlob(fileName));
+
+        }
     }
 
     /** Create a new commit and update the HEAD reference */
