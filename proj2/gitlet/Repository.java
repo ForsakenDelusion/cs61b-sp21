@@ -53,9 +53,9 @@ public class Repository {
     /** copy the work file into .gitlet/object dictionary and create an index */
     static void add(String fileName) {
         File curFile = new File(CWD, fileName);
-        if(curFile.exists()) {
-        Index.getCurrentIndex().addInBlobSet(curFile,Blob.createBlob(fileName));
-        } else System.out.println("File does not exist.");
+        if(!curFile.exists()) {
+            System.out.println("File does not exist.");
+        } else Index.getCurrentIndex().addInBlobSet(curFile,Blob.createBlob(fileName));
     }
 
     /** Create a new commit and update the HEAD reference */
@@ -135,16 +135,32 @@ public class Repository {
     }
 
     static void status(){
-
-
+        String curBranch = readContentsAsString(join(GITLET_REFERENCE,"HEAD"));
+        List<String> branchList = plainFilenamesIn(GITLET_REFERENCE);
+        Index curIndex = Index.getCurrentIndex();
+        Map<File, Blob> curStagedFiles = curIndex.getBlobSet();
+        List<String> curFilesList = plainFilenamesIn(CWD);
 
         System.out.println("=== Branches ===");
-
+        System.out.println("*"+curBranch);
+        for(String branch : branchList) {
+            if(!Objects.equals(branch, curBranch) && !branch.equals("HEAD")) {
+                System.out.println(branch);
+            }
+        }
         System.out.println();
         System.out.println("=== Staged Files ===");
+        for(File file : curStagedFiles.keySet()) {
+            System.out.println(file.getName());
+        }
 
         System.out.println();
         System.out.println("=== Removed Files ===");
+        for(File file : curStagedFiles.keySet()) {
+            if (!curFilesList.contains(file.getName())) {
+                System.out.println(file.getName());
+            }
+        }
 
         System.out.println();
         System.out.println("=== Modifications Not Staged For Commit ===");
