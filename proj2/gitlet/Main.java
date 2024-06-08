@@ -36,6 +36,9 @@ public class Main {
             case "find":
                 Repository.find(args[1]);
                 break;
+            case "checkout":
+                Repository.checkout(args);
+                break;
             case "status":
                 Repository.status();
                 break;

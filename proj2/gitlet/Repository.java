@@ -45,13 +45,14 @@ public class Repository {
         GITLET_REFERENCE.mkdir();
         GITLET_COMMIT.mkdir();
         writeContents(GITLET_HEAD, new Commit().getId());
+        writeContents(join(GITLET_REFERENCE,"master"), new Commit().getId());
         writeObject(GITLET_INDEX, new Index());
     }
 
     /** copy the work file into .gitlet/object dictionary and create an index */
     static void add(String fileName) {
         File curFile = new File(CWD, fileName);
-            Index.getCurrentIndex().addInBlobSet(curFile,Blob.createBlob(fileName));
+        Index.getCurrentIndex().addInBlobSet(curFile,Blob.createBlob(fileName));
     }
 
     /** Create a new commit and update the HEAD reference */
@@ -97,6 +98,36 @@ public class Repository {
 
     static void find(String commitMessage) {
         Commit.find(commitMessage);
+    }
+
+    static void checkout(String[] args) {
+        if(args.length == 2) {
+            return;
+        } else if (args.length == 3) {
+            String fileName = args[2];
+            File curFile = new File(CWD, fileName);
+            Commit curCommit = Commit.getCurrentCommit();
+            Map<File,Blob> curBlobs = curCommit.getBlobs();
+            if(curBlobs.containsKey(curFile)) {
+                writeContents(join(curFile),curBlobs.get(curFile).getContent());
+                return;
+            } else System.out.println("File does not exist in that commit.");
+        } else if (args.length == 4) {
+            String curCommitId = args[1];
+            String curFileName = args[3];
+            File curCommitObj = new File(GITLET_COMMIT, curCommitId);
+            File curFile = new File(CWD, curFileName);
+            if(curCommitObj.exists()) {
+                Commit curCommit = Commit.getCommitById(curCommitId);
+                Map<File,Blob> curBlobs = curCommit.getBlobs();
+                if(curBlobs.containsKey(curFile)) {
+                    writeContents(join(curFile),curBlobs.get(curFile).getContent());
+                }
+            } else System.out.println("File does not exist in that commit.");
+
+
+        }
+
     }
 
     static void status(){
