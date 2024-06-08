@@ -20,13 +20,13 @@ public class Index implements Serializable {
         this.saveIndex();
     }
 
-    /** blobArray getter */
-    public Map<File, Blob> getBlobArray() {
+    /** blobSet getter */
+    public Map<File, Blob> getBlobSet() {
         return this.blobs;
     }
 
     /** Add a new blob into the blobArray */
-    void addInBlobArray(File file,Blob blob) {
+    void addInBlobSet(File file,Blob blob) {
         Index curIndex = getCurrentIndex();
         if(blob == null){
             return;
