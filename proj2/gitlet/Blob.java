@@ -37,10 +37,6 @@ public class Blob implements Serializable {
     /** create a new Blob obj and save it in the objects dictionary then return this Blob obj */
     static Blob createBlob(String fileName){
         File CWDFile = new File(CWD,fileName);
-        if(!CWDFile.exists()){
-            System.out.println("File does not exist.");
-            return null;
-        }
         String content = readContentsAsString(CWDFile);
         Blob newBlob =  new Blob(fileName,content);
         File blobObj = join(GITLET_OBJECTS,newBlob.getHashId());
