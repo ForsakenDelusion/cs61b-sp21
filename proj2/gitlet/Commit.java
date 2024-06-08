@@ -39,7 +39,7 @@ public class Commit implements Serializable {
     Commit(String message) {
         this.message = message;
         this.date = dateFormat.format(new Date());
-        this.branch = getCurrentCommit().getBranch();
+        this.branch = readContentsAsString(join(GITLET_REFERENCE,"HEAD"));
         this.parentCommit = getCurrentCommit().getId();
         blobs.putAll(Index.getCurrentIndex().getBlobSet());
         setID();
@@ -190,4 +190,7 @@ public class Commit implements Serializable {
         }
     }
 
+    static void updateBranch() {
+        writeContents(join(GITLET_REFERENCE,readContentsAsString(join(GITLET_REFERENCE,"HEAD"))),readContentsAsString(join(GITLET_HEAD)));
+    }
 }
