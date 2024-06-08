@@ -45,8 +45,9 @@ public class Repository {
         GITLET_REFERENCE.mkdir();
         GITLET_COMMIT.mkdir();
         writeContents(GITLET_HEAD, new Commit().getId());
-        writeContents(join(GITLET_REFERENCE,"master"), new Commit().getId());
+        writeContents(join(GITLET_REFERENCE,"master"), GITLET_HEAD);
         writeObject(GITLET_INDEX, new Index());
+        writeContents(join(GITLET_REFERENCE,"HEAD"),"master");
     }
 
     /** copy the work file into .gitlet/object dictionary and create an index */
@@ -64,6 +65,7 @@ public class Repository {
         if (!Index.getCurrentIndex().getBlobSet().isEmpty()) {
             Commit commit = new Commit(message);
             Commit.updateHEAD(commit);
+            Commit.updateBranch();
             Index.resetIndex();
             return;
         }
@@ -143,5 +145,15 @@ public class Repository {
         System.out.println("=== Staged Files ===");
 
 
+    }
+
+    public static void branch(String branchName) {
+        File branchFile = new File(CWD, branchName);
+        if(branchFile.exists()) {
+            System.out.println("A branch with that name already exists.");
+        } else {
+            writeContents(join(GITLET_REFERENCE,branchName), GITLET_HEAD);
+            writeContents(join(GITLET_REFERENCE,"HEAD"),branchName);
+        }
     }
 }
