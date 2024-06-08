@@ -149,9 +149,10 @@ public class Repository {
         Map<File,Blob> curCommitStagedBlobs = curCommit.getBlobs();
         List<String> CWDFiles = plainFilenamesIn(CWD);
 
-        for (File file : curStagedFiles.keySet()) {
+        for (File file : curCommitStagedBlobs.keySet()) {
             if (CWDFiles != null && !CWDFiles.contains(file.getName())) {
-                curIndex.addInDeleteBlobSet(file,curStagedFiles.get(file));
+                curIndex.addInDeleteBlobSet(file,curCommitStagedBlobs.get(file));
+                curIndex = Index.getCurrentIndex();
             }
         }
 
