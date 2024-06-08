@@ -41,7 +41,7 @@ public class Commit implements Serializable {
         this.date = dateFormat.format(new Date());
         this.branch = getCurrentCommit().getBranch();
         this.parentCommit = getCurrentCommit().getId();
-        blobs.putAll(Index.getCurrentIndex().getBlobArray());
+        blobs.putAll(Index.getCurrentIndex().getBlobSet());
         setID();
         saveCommit();
     }
