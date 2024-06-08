@@ -66,15 +66,17 @@ public class Repository {
 
     /** Create a new commit and update the HEAD reference */
     static void commit(String message) {
-        if(message == null) {
+        if(message.isEmpty()) {
             System.out.println("Please enter a commit message.");
+        } else {
+            if (!Index.getCurrentIndex().getBlobSet().isEmpty() || !Index.getCurrentIndex().getDeleteBlobs().isEmpty()) {
+                Commit commit = new Commit(message);
+                Commit.updateHEAD(commit);
+                Commit.updateBranch();
+                Index.resetIndex();
+            } else System.out.println("No changes added to the commit.");
         }
-        if (!Index.getCurrentIndex().getBlobSet().isEmpty() || !Index.getCurrentIndex().getDeleteBlobs().isEmpty()) {
-            Commit commit = new Commit(message);
-            Commit.updateHEAD(commit);
-            Commit.updateBranch();
-            Index.resetIndex();
-        } else System.out.println("No changes added to the commit.");
+
 
     }
 
