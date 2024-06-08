@@ -37,11 +37,13 @@ public class Blob implements Serializable {
     /** create a new Blob obj and save it in the objects dictionary then return this Blob obj */
     static Blob createBlob(String fileName){
         File CWDFile = new File(CWD,fileName);
-        String content = readContentsAsString(CWDFile);
-        Blob newBlob =  new Blob(fileName,content);
-        File blobObj = join(GITLET_OBJECTS,newBlob.getHashId());
-        if (!blobObj.exists()) newBlob.saveBlob();
-        return newBlob;
+        if(CWDFile.exists()){
+            String content = readContentsAsString(CWDFile);
+            Blob newBlob =  new Blob(fileName,content);
+            File blobObj = join(GITLET_OBJECTS,newBlob.getHashId());
+            if (!blobObj.exists()) newBlob.saveBlob();
+            return newBlob;
+        }else return null;
     }
 
    /** Set the hashID */
