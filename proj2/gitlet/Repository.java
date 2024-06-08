@@ -69,16 +69,14 @@ public class Repository {
     static void commit(String message) {
         if(message == null) {
             System.out.println("Please enter a commit message.");
-            return;
         }
-        if (!Index.getCurrentIndex().getBlobSet().isEmpty()) {
+        if (!Index.getCurrentIndex().getBlobSet().isEmpty() || !Index.getCurrentIndex().getDeleteBlobs().isEmpty()) {
             Commit commit = new Commit(message);
             Commit.updateHEAD(commit);
             Commit.updateBranch();
             Index.resetIndex();
-            return;
-        }
-        System.out.println("No changes added to the commit.");
+        } else System.out.println("No changes added to the commit.");
+
     }
 
     /** The rm command */
@@ -94,6 +92,7 @@ public class Repository {
                 if(curCommit.getBlobs().containsKey(curFile)) {
                     curIndex.removeInBlobSet(curFile);
                     curIndex.addInDeleteBlobSet(curFile,curBlob);
+                    curCommit.removeInBlobs(curFile);
                     Utils.restrictedDelete(join(CWD,fileName));
                 } else System.out.println("No reason to remove the file.");
             }
