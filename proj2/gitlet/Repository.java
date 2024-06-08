@@ -184,13 +184,13 @@ public class Repository {
 
     public static void rmBranch(String deleteBranch) {
         File deleteBranchFile = new File(GITLET_REFERENCE, deleteBranch);
-        if(deleteBranchFile.exists()) {
-            if (readContentsAsString(join(GITLET_REFERENCE, "HEAD")).equals(deleteBranch)){
-                System.out.println("Cannot remove the current branch.");
-            }
-            restrictedDelete(join(GITLET_REFERENCE,deleteBranch));
-            return;
-        }
+        if(!deleteBranchFile.exists()) {
         System.out.println("A branch with that name does not exist.");
+        } else {
+            if (readContentsAsString(join(GITLET_REFERENCE, "HEAD")).equals(deleteBranch)) {
+                System.out.println("Cannot remove the current branch.");
+            } else restrictedDelete(join(GITLET_REFERENCE, deleteBranch));
+
+        }
     }
 }
