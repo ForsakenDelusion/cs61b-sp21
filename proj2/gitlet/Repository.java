@@ -81,10 +81,10 @@ public class Repository {
         File curFile = new File(CWD, fileName);
         Commit curCommit = Commit.getCurrentCommit();
         if(!curIndex.getBlobSet().isEmpty()) {
-            curIndex.removeInBlobSet(curBlob);
+            curIndex.remove(curFile,curBlob);
         } else {
-            if(curCommit.containsSameHashBlob(curBlob)) {
-                curIndex.addInBlobSet(curFile,curBlob);
+            if(curCommit.getBlobs().containsKey(curFile)) {
+                curIndex.getDeleteBlobs().put(curFile,curBlob);
                 curCommit.removeInBlobSet(curBlob);
                 Utils.restrictedDelete(join(CWD,fileName));
             } else System.out.println("No reason to remove the file.");
@@ -139,7 +139,7 @@ public class Repository {
         List<String> branchList = plainFilenamesIn(GITLET_REFERENCE);
         Index curIndex = Index.getCurrentIndex();
         Map<File, Blob> curStagedFiles = curIndex.getBlobSet();
-        List<String> curFilesList = plainFilenamesIn(CWD);
+        Map<File, Blob> removeFiles = curIndex.getDeleteBlobs();
 
         System.out.println("=== Branches ===");
         System.out.println("*"+curBranch);
@@ -156,11 +156,10 @@ public class Repository {
 
         System.out.println();
         System.out.println("=== Removed Files ===");
-        for(File file : curStagedFiles.keySet()) {
-            if (!curFilesList.contains(file.getName())) {
-                System.out.println(file.getName());
-            }
+        for(File file : removeFiles.keySet()) {
+            System.out.println(file.getName());
         }
+
 
         System.out.println();
         System.out.println("=== Modifications Not Staged For Commit ===");
