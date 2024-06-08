@@ -71,15 +71,9 @@ public class Repository {
         }
         if (!Index.getCurrentIndex().getBlobSet().isEmpty() || !Index.getCurrentIndex().getDeleteBlobs().isEmpty()) {
             Commit commit = new Commit(message);
-            Index curIndex = Index.getCurrentIndex();
             Commit.updateHEAD(commit);
             Commit.updateBranch();
             Index.resetIndex();
-            Set<File> curFiles = curIndex.getDeleteBlobs().keySet();
-            for (File curFile : curFiles) {
-                Utils.restrictedDelete(join(CWD, curFile.getName()));
-                commit.removeInBlobs(curFile);
-            }
         } else System.out.println("No changes added to the commit.");
 
     }
@@ -97,6 +91,7 @@ public class Repository {
                 if(curCommit.getBlobs().containsKey(curFile)) {
                     curIndex.removeInBlobSet(curFile);
                     curIndex.addInDeleteBlobSet(curFile,curBlob);
+                    Utils.restrictedDelete(join(CWD,fileName));
                 } else System.out.println("No reason to remove the file.");
             }
         }
