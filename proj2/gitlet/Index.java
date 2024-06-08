@@ -16,7 +16,7 @@ public class Index implements Serializable {
 
     /** When the Repository.init() be called this constructor will save an empty List in Index */
     Index(){
-        this.blobs = new HashMap();
+        this.blobs = new HashMap<>();
         this.saveIndex();
     }
 
