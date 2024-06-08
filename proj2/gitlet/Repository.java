@@ -158,8 +158,6 @@ public class Repository {
             removeFiles = Index.getCurrentIndex().getDeleteBlobs();
         }
 
-
-
         System.out.println("=== Branches ===");
         System.out.println("*"+curBranch);
         for(String branch : branchList) {
@@ -185,7 +183,14 @@ public class Repository {
 
         System.out.println();
         System.out.println("=== Untracked Files ===");
-
+        if (CWDFiles != null) {
+            for (String fileName : CWDFiles) {
+                File curFile = new File(CWD, fileName);
+                if (!curStagedFiles.containsKey(curFile)) {
+                    System.out.println(fileName);
+                }
+            }
+        }
         System.out.println();
 
     }
