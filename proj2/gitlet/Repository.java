@@ -59,7 +59,7 @@ public class Repository {
         } else {
             if (curIndex.getDeleteBlobs().containsKey(curFile)){
                 curIndex.removeInDeleteBlobSet(curFile);
-            } curIndex.addInBlobSet(curFile,Blob.createBlob(fileName));
+            } else curIndex.addInBlobSet(curFile,Blob.createBlob(fileName));
 
         }
     }
