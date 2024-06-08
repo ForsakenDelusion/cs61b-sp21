@@ -26,6 +26,7 @@ public class Blob implements Serializable {
         setID();
     }
 
+
     public Blob(String fileName){
         this.fileName = fileName;
         this.content = readContentsAsString(join(CWD,fileName));
@@ -65,6 +66,7 @@ public class Blob implements Serializable {
         writeObject(join(GITLET_OBJECTS,this.getHashId()),this);
     }
 
+    /** Find the corresponding Blob based on the file name of the workspace */
     static Blob findBlobByFileName(String fileName) {
         File CWDFile = new File(CWD,fileName);
         String content = readContentsAsString(CWDFile);
@@ -74,6 +76,7 @@ public class Blob implements Serializable {
         return null;
     }
 
+    /** Delete the Blob in objects dictionary */
     static void deleteBlobInObject(Blob blob) {
         String hashId = blob.getHashId();
         File searchBlob = join(GITLET_OBJECTS,hashId);
