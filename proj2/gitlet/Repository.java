@@ -180,6 +180,9 @@ public class Repository {
 
         System.out.println();
         System.out.println("=== Modifications Not Staged For Commit ===");
+        untracked(curCommitStagedBlobs, CWDFiles);
+        untracked(curStagedFiles, CWDFiles);
+
 
         System.out.println();
         System.out.println("=== Untracked Files ===");
@@ -193,6 +196,21 @@ public class Repository {
         }
         System.out.println();
 
+    }
+
+    private static void untracked(Map<File, Blob> curStagedFiles, List<String> CWDFiles) {
+        for (Map.Entry<File,Blob> entry : curStagedFiles.entrySet()) {
+            String fileName = entry.getKey().getName();
+            Blob fileBlob = entry.getValue();
+            Blob CWDBlob = Blob.createBlob(fileName);
+            if (CWDFiles != null) {
+                if (!CWDFiles.contains(fileName)) {
+                    System.out.println(fileName+" deleted");
+                } else if (CWDBlob != fileBlob) {
+                    System.out.println(fileName+" modified");
+                }
+            }
+        }
     }
 
     public static void branch(String branchName) {
