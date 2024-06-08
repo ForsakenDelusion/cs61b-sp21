@@ -77,19 +77,20 @@ public class Repository {
     /** The rm command */
     static void rm(String fileName) {
         Index curIndex = Index.getCurrentIndex();
-        Blob curBlob = new Blob(fileName);
         File curFile = new File(CWD, fileName);
         Commit curCommit = Commit.getCurrentCommit();
-        if(!curIndex.getBlobSet().isEmpty()) {
-            curIndex.remove(curFile,curBlob);
-        } else {
-            if(curCommit.getBlobs().containsKey(curFile)) {
-                curIndex.getDeleteBlobs().put(curFile,curBlob);
-                curCommit.removeInBlobSet(curBlob);
-                Utils.restrictedDelete(join(CWD,fileName));
-            } else System.out.println("No reason to remove the file.");
+        if(curFile.exists()) {
+        Blob curBlob = new Blob(fileName);
+            if(!curIndex.getBlobSet().isEmpty()) {
+                curIndex.remove(curFile,curBlob);
+            } else {
+                if(curCommit.getBlobs().containsKey(curFile)) {
+                    curIndex.getDeleteBlobs().put(curFile,curBlob);
+                    curCommit.removeInBlobSet(curBlob);
+                    Utils.restrictedDelete(join(CWD,fileName));
+                } else System.out.println("No reason to remove the file.");
+            }
         }
-
     }
 
     static void log(){
