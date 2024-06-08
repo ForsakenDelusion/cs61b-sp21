@@ -61,6 +61,10 @@ public class Blob implements Serializable {
        return this.hashId;
    }
 
+   String getFileName(){
+       return this.fileName;
+   }
+
     /** Serialize current Blob */
     public void saveBlob() {
         writeObject(join(GITLET_OBJECTS,this.getHashId()),this);

@@ -9,6 +9,7 @@ import java.util.*;
 
 import static gitlet.Repository.*;
 import static gitlet.Utils.*;
+import static gitlet.Utils.plainFilenamesIn;
 
 /** Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
@@ -31,7 +32,7 @@ public class Commit implements Serializable {
     String parentCommit;
     String branch;
     String date;
-    ArrayList<Blob> blobs = new ArrayList<>();
+    Map<File,Blob> blobs = new HashMap<>();
     /* TODO: fill in the rest of this class. */
     SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy Z");
 
@@ -40,7 +41,7 @@ public class Commit implements Serializable {
         this.date = dateFormat.format(new Date());
         this.branch = getCurrentCommit().getBranch();
         this.parentCommit = getCurrentCommit().getId();
-        blobs.addAll(Index.getCurrentIndex().getBlobArray());
+        blobs.putAll(Index.getCurrentIndex().getBlobArray());
         setID();
         saveCommit();
     }
@@ -88,7 +89,7 @@ public class Commit implements Serializable {
     }
 
     /** BlobArray getter */
-    List<Blob> getBlobs() {
+    Map<File, Blob> getBlobs() {
         return this.blobs;
     }
 
@@ -99,7 +100,7 @@ public class Commit implements Serializable {
         vals.add(this.parentCommit);
         vals.add(this.date);
         vals.add(this.branch);
-        for(Blob b : blobs) {
+        for(Blob b : blobs.values()) {
             vals.add(b.toString());
         }
         this.id = sha1(vals);
@@ -119,16 +120,20 @@ public class Commit implements Serializable {
     }
 
     /** Remove the same Hash obj in blobs */
-    void removeInBlobArray(Blob blob) {
+    void removeInBlobSet(Blob blob) {
         String hashId = blob.getHashId();
-        this.getBlobs().removeIf(b -> b.getHashId().equals(hashId));
+        for (Blob b : blobs.values()) {
+            if (b.getHashId().equals(hashId)) {
+                blobs.remove(b);
+            }
+        }
         this.saveCommit();
     }
 
     /** Check for obj of the same hash in blobs */
     boolean containsSameHashBlob(Blob blob) {
         String hashId = blob.getHashId();
-        for(Blob b : blobs) {
+        for(Blob b : blobs.values()) {
             if(b.getHashId().equals(hashId)){
                 return true;
             }
@@ -170,4 +175,19 @@ public class Commit implements Serializable {
             printCommit(getCommitById(filename));
         }
     }
+
+    static void find(String message){
+        List<String> commits = plainFilenamesIn(GITLET_COMMIT);
+        int counter = 0;
+        for (String filename : commits) {
+            if (Objects.equals(getCommitById(filename).getMessage(), message)) {
+                System.out.println(getCommitById(filename).getId());
+                counter ++;
+            }
+        }
+        if (counter == 0 ) {
+            System.out.println("Found no commit with that message.");
+        }
+    }
+
 }

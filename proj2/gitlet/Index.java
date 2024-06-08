@@ -1,7 +1,10 @@
 package gitlet;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static gitlet.Repository.GITLET_INDEX;
 import static gitlet.Utils.*;
@@ -9,26 +12,26 @@ import static gitlet.Utils.*;
 
 public class Index implements Serializable {
 
-    ArrayList<Blob> blobArray;
+    Map<File, Blob> blobs;
 
     /** When the Repository.init() be called this constructor will save an empty List in Index */
     Index(){
-        this.blobArray = new ArrayList<>();
+        this.blobs = new HashMap();
         this.saveIndex();
     }
 
     /** blobArray getter */
-    public ArrayList<Blob> getBlobArray() {
-        return this.blobArray;
+    public Map<File, Blob> getBlobArray() {
+        return this.blobs;
     }
 
     /** Add a new blob into the blobArray */
-    void addInBlobArray(Blob blob) {
+    void addInBlobArray(File file,Blob blob) {
         Index curIndex = getCurrentIndex();
         if(blob == null){
             return;
         }
-        curIndex.blobArray.add(blob);
+        curIndex.blobs.put(file,blob);
         curIndex.saveIndex();
     }
 
@@ -47,9 +50,13 @@ public class Index implements Serializable {
     }
 
     /** Remove the same Hash obj in BlobArray */
-    void removeInBlobArray(Blob blob) {
+    void removeInBlobSet(Blob blob) {
         String hashId = blob.getHashId();
-        this.getBlobArray().removeIf(b -> b.getHashId().equals(hashId));
+        for (Blob b : this.blobs.values()) {
+            if (b.getHashId().equals(hashId)) {
+                this.blobs.remove(b);
+            }
+        }
         this.saveIndex();
     }
 }

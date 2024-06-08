@@ -1,7 +1,7 @@
 package gitlet;
 
 import java.io.File;
-import java.util.Date;
+import java.util.*;
 
 import static gitlet.Utils.*;
 
@@ -50,7 +50,8 @@ public class Repository {
 
     /** copy the work file into .gitlet/object dictionary and create an index */
     static void add(String fileName) {
-            Index.getCurrentIndex().addInBlobArray(Blob.createBlob(fileName));
+        File curFile = new File(CWD, fileName);
+            Index.getCurrentIndex().addInBlobArray(curFile,Blob.createBlob(fileName));
     }
 
     /** Create a new commit and update the HEAD reference */
@@ -72,13 +73,14 @@ public class Repository {
     static void rm(String fileName) {
         Index curIndex = Index.getCurrentIndex();
         Blob curBlob = new Blob(fileName);
+        File curFile = new File(CWD, fileName);
         Commit curCommit = Commit.getCurrentCommit();
         if(!curIndex.getBlobArray().isEmpty()) {
-            curIndex.removeInBlobArray(curBlob);
+            curIndex.removeInBlobSet(curBlob);
         } else {
             if(curCommit.containsSameHashBlob(curBlob)) {
-                curIndex.addInBlobArray(curBlob);
-                curCommit.removeInBlobArray(curBlob);
+                curIndex.addInBlobArray(curFile,curBlob);
+                curCommit.removeInBlobSet(curBlob);
                 Utils.restrictedDelete(join(CWD,fileName));
             } else System.out.println("No reason to remove the file.");
         }
@@ -93,4 +95,22 @@ public class Repository {
         Commit.globalLog();
     }
 
+    static void find(String commitMessage) {
+        Commit.find(commitMessage);
+    }
+
+    static void status(){
+        Commit curCommit = Commit.getCurrentCommit();
+        Index index = Index.getCurrentIndex();
+        String branch = curCommit.getBranch();
+        Map<File,Blob> stagingFiles = Index.getCurrentIndex().getBlobArray();
+
+
+        System.out.println("=== Branches ===");
+        System.out.println(branch);
+        System.out.println();
+        System.out.println("=== Staged Files ===");
+
+
+    }
 }
