@@ -136,6 +136,7 @@ public class Commit implements Serializable {
         return false;
     }
 
+    /** Formatted output log */
     static void printCommit(Commit commit) {
         String curCommitID = commit.getId();
         String curCommitMessage = commit.getMessage();
@@ -162,6 +163,7 @@ public class Commit implements Serializable {
         }
     }
 
+    /** The global-log command */
     static void globalLog(){
         List<String> files = plainFilenamesIn(GITLET_COMMIT);
         for (String filename : files) {
