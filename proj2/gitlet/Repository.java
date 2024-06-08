@@ -51,7 +51,7 @@ public class Repository {
     /** copy the work file into .gitlet/object dictionary and create an index */
     static void add(String fileName) {
         File curFile = new File(CWD, fileName);
-            Index.getCurrentIndex().addInBlobArray(curFile,Blob.createBlob(fileName));
+            Index.getCurrentIndex().addInBlobSet(curFile,Blob.createBlob(fileName));
     }
 
     /** Create a new commit and update the HEAD reference */
@@ -60,7 +60,7 @@ public class Repository {
             System.out.println("Please enter a commit message.");
             return;
         }
-        if (!Index.getCurrentIndex().getBlobArray().isEmpty()) {
+        if (!Index.getCurrentIndex().getBlobSet().isEmpty()) {
             Commit commit = new Commit(message);
             Commit.updateHEAD(commit);
             Index.resetIndex();
@@ -75,11 +75,11 @@ public class Repository {
         Blob curBlob = new Blob(fileName);
         File curFile = new File(CWD, fileName);
         Commit curCommit = Commit.getCurrentCommit();
-        if(!curIndex.getBlobArray().isEmpty()) {
+        if(!curIndex.getBlobSet().isEmpty()) {
             curIndex.removeInBlobSet(curBlob);
         } else {
             if(curCommit.containsSameHashBlob(curBlob)) {
-                curIndex.addInBlobArray(curFile,curBlob);
+                curIndex.addInBlobSet(curFile,curBlob);
                 curCommit.removeInBlobSet(curBlob);
                 Utils.restrictedDelete(join(CWD,fileName));
             } else System.out.println("No reason to remove the file.");
@@ -103,7 +103,7 @@ public class Repository {
         Commit curCommit = Commit.getCurrentCommit();
         Index index = Index.getCurrentIndex();
         String branch = curCommit.getBranch();
-        Map<File,Blob> stagingFiles = Index.getCurrentIndex().getBlobArray();
+        Map<File,Blob> stagingFiles = Index.getCurrentIndex().getBlobSet();
 
 
         System.out.println("=== Branches ===");
