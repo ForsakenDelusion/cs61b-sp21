@@ -145,6 +145,15 @@ public class Repository {
         Index curIndex = Index.getCurrentIndex();
         Map<File, Blob> curStagedFiles = curIndex.getBlobSet();
         Map<File, Blob> removeFiles = curIndex.getDeleteBlobs();
+        Commit curCommit = Commit.getCurrentCommit();
+        Map<File,Blob> curCommitStagedBlobs = curCommit.getBlobs();
+        List<String> CWDFiles = plainFilenamesIn(CWD);
+
+        for (File file : curStagedFiles.keySet()) {
+            if (CWDFiles != null && !CWDFiles.contains(file.getName())) {
+                curIndex.addInDeleteBlobSet(file,curStagedFiles.get(file));
+            }
+        }
 
         System.out.println("=== Branches ===");
         System.out.println("*"+curBranch);
