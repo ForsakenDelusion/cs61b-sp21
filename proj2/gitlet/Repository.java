@@ -152,9 +152,11 @@ public class Repository {
         for (File file : curCommitStagedBlobs.keySet()) {
             if (CWDFiles != null && !CWDFiles.contains(file.getName())) {
                 curIndex.addInDeleteBlobSet(file,curCommitStagedBlobs.get(file));
-                curIndex = Index.getCurrentIndex();
             }
+            removeFiles = Index.getCurrentIndex().getDeleteBlobs();
         }
+
+
 
         System.out.println("=== Branches ===");
         System.out.println("*"+curBranch);
