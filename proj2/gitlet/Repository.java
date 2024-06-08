@@ -53,7 +53,9 @@ public class Repository {
     /** copy the work file into .gitlet/object dictionary and create an index */
     static void add(String fileName) {
         File curFile = new File(CWD, fileName);
+        if(curFile.exists()) {
         Index.getCurrentIndex().addInBlobSet(curFile,Blob.createBlob(fileName));
+        } else System.out.println("File does not exist.");
     }
 
     /** Create a new commit and update the HEAD reference */
@@ -133,17 +135,24 @@ public class Repository {
     }
 
     static void status(){
-        Commit curCommit = Commit.getCurrentCommit();
-        Index index = Index.getCurrentIndex();
-        String branch = curCommit.getBranch();
-        Map<File,Blob> stagingFiles = Index.getCurrentIndex().getBlobSet();
+
 
 
         System.out.println("=== Branches ===");
-        System.out.println(branch);
+
         System.out.println();
         System.out.println("=== Staged Files ===");
 
+        System.out.println();
+        System.out.println("=== Removed Files ===");
+
+        System.out.println();
+        System.out.println("=== Modifications Not Staged For Commit ===");
+
+        System.out.println();
+        System.out.println("=== Untracked Files ===");
+
+        System.out.println();
 
     }
 
@@ -152,7 +161,7 @@ public class Repository {
         if(branchFile.exists()) {
             System.out.println("A branch with that name already exists.");
         } else {
-            writeContents(join(GITLET_REFERENCE,branchName), GITLET_HEAD);
+            writeContents(join(GITLET_REFERENCE,branchName),readContentsAsString(GITLET_HEAD));
             writeContents(join(GITLET_REFERENCE,"HEAD"),branchName);
         }
     }

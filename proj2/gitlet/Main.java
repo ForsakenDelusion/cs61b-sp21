@@ -44,6 +44,7 @@ public class Main {
                 break;
             case "branch":
                 Repository.branch(args[1]);
+                break;
             case "rm-branch":
                 Repository.rmBranch(args[1]);
                 break;
