@@ -31,27 +31,6 @@ public class Index implements Serializable {
         return this.deleteBlobs;
     }
 
-    /** Add a new blob into the blobArray */
-    void addInBlobSet(File file,Blob blob) {
-        Index curIndex = getCurrentIndex();
-        if(blob == null){
-            return;
-        }
-        curIndex.blobs.put(file,blob);
-        curIndex.saveIndex();
-    }
-
-    /** Add a new blob into the deleteBlobs */
-    void remove(File file, Blob blob) {
-        Index curIndex = getCurrentIndex();
-        if(blob == null){
-            return;
-        }
-        curIndex.getBlobSet().remove(file);
-        curIndex.getDeleteBlobs().put(file,blob);
-        curIndex.saveIndex();
-    }
-
     static Index getCurrentIndex(){
         return readObject(GITLET_INDEX,Index.class);
     }
@@ -66,19 +45,35 @@ public class Index implements Serializable {
         writeObject(GITLET_INDEX,new Index());
     }
 
-    /** Remove the same Hash obj in BlobArray */
-    void removeInBlobSet(Blob blob) {
-        String hashId = blob.getHashId();
-        for (Blob b : this.blobs.values()) {
-            if (b.getHashId().equals(hashId)) {
-                this.blobs.remove(b);
-            }
-        }
-        this.saveIndex();
-    }
-
     void removeInBlobSet(File file) {
         this.getBlobSet().remove(file);
         this.saveIndex();
     }
+
+    void removeInDeleteBlobSet(File file) {
+        this.getDeleteBlobs().remove(file);
+        this.saveIndex();
+    }
+
+    /** Add a new blob into the blobArray */
+    void addInBlobSet(File file,Blob blob) {
+        Index curIndex = getCurrentIndex();
+        if(blob == null){
+            return;
+        }
+        curIndex.getBlobSet().put(file,blob);
+        curIndex.saveIndex();
+    }
+
+    void addInDeleteBlobSet(File file, Blob blob) {
+        Index curIndex = getCurrentIndex();
+        if(blob == null){
+            return;
+        }
+        curIndex.getDeleteBlobs().put(file, blob);
+        curIndex.saveIndex();
+    }
+
+
+
 }
