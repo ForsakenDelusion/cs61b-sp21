@@ -45,7 +45,7 @@ public class Repository {
         GITLET_REFERENCE.mkdir();
         GITLET_COMMIT.mkdir();
         writeContents(GITLET_HEAD, new Commit().getId());
-        writeContents(join(GITLET_REFERENCE,"master"), GITLET_HEAD);
+        writeContents(join(GITLET_REFERENCE,"master"), readContentsAsString(GITLET_HEAD));
         writeObject(GITLET_INDEX, new Index());
         writeContents(join(GITLET_REFERENCE,"HEAD"),"master");
     }
