@@ -89,11 +89,11 @@ public class Repository {
         if(curFile.exists()) {
         Blob curBlob = new Blob(fileName);
             if(!curIndex.getBlobSet().isEmpty()) {
-                curIndex.remove(curFile,curBlob);
+                curIndex.removeInBlobSet(curFile);
             } else {
                 if(curCommit.getBlobs().containsKey(curFile)) {
-                    curIndex.getDeleteBlobs().put(curFile,curBlob);
-                    curCommit.removeInBlobSet(curBlob);
+                    curIndex.removeInBlobSet(curFile);
+                    curIndex.addInDeleteBlobSet(curFile,curBlob);
                     Utils.restrictedDelete(join(CWD,fileName));
                 } else System.out.println("No reason to remove the file.");
             }
