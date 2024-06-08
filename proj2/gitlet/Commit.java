@@ -119,7 +119,10 @@ public class Commit implements Serializable {
         return this.date;
     }
 
-    /** Remove the same Hash obj in blobs */
+/*
+    */
+/** Remove the same Hash obj in blobs *//*
+
     void removeInBlobSet(Blob blob) {
         String hashId = blob.getHashId();
         for (Blob b : blobs.values()) {
@@ -130,7 +133,9 @@ public class Commit implements Serializable {
         this.saveCommit();
     }
 
-    /** Check for obj of the same hash in blobs */
+    */
+/** Check for obj of the same hash in blobs *//*
+
     boolean containsSameHashBlob(Blob blob) {
         String hashId = blob.getHashId();
         for(Blob b : blobs.values()) {
@@ -139,6 +144,12 @@ public class Commit implements Serializable {
             }
         }
         return false;
+    }
+*/
+
+    void removeInBlobs(File file) {
+        this.getBlobs().remove(file);
+        this.saveCommit();
     }
 
     /** Formatted output log */
