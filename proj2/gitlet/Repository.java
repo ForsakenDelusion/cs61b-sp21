@@ -157,19 +157,16 @@ public class Repository {
         } else if (args.length == 4 && args[2].equals("--")) {
             String curCommitId = args[1];
             String curFileName = args[3];
-            File curCommitObj = new File(GITLET_COMMIT, curCommitId);
+            String findCommitById = Commit.findCommit(curCommitId);
             File curFile = new File(CWD, curFileName);
-            if (curCommitObj.exists()) {
-                Commit curCommit = Commit.getCommitById(curCommitId);
-                Map<File, Blob> curBlobs = curCommit.getBlobs();
-                if (curBlobs.containsKey(curFile)) {
-                    writeContents(join(curFile), curBlobs.get(curFile).getContent());
-                } else {
-                    System.out.println("File does not exist in that commit.");
-                }
+            Commit curCommit = Commit.getCommitById(findCommitById);
+            Map<File, Blob> curBlobs = curCommit.getBlobs();
+            if (curBlobs.containsKey(curFile)) {
+                writeContents(join(curFile), curBlobs.get(curFile).getContent());
             } else {
-                System.out.println("No commit with that id exists.");
+                System.out.println("File does not exist in that commit.");
             }
+
         } else {
             System.out.println("Incorrect operands.");
         }
