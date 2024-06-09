@@ -96,6 +96,8 @@ public class Repository {
                     Utils.restrictedDelete(join(CWD,fileName));
                 } else System.out.println("No reason to remove the file.");
             }
+        } else {
+            curIndex.addInDeleteBlobSet(curFile,curCommit.getBlobs().get(curFile));
         }
     }
 
