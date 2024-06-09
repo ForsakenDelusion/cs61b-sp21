@@ -182,14 +182,17 @@ public class Repository {
         System.out.println("=== Modifications Not Staged For Commit ===");
         for(Map.Entry<File,Blob> entry : curCommitStagedBlobs.entrySet()) {
             String fileName = entry.getKey().getName();
+            File curFile = entry.getKey();
             Blob fileBlob = entry.getValue();
             Blob CWDBlob = Blob.createBlob(fileName);
-            if (CWDFiles != null){
-                if (!CWDFiles.contains(fileName)) {
+            if (CWDFiles != null && CWDBlob != null){
+                if (!CWDFiles.contains(fileName) && !curStagedFiles.containsKey(curFile)) {
                     System.out.println(fileName+" (deleted)");
                 } else if (!Objects.equals(CWDBlob.getHashId(), fileBlob.getHashId())) {
                     System.out.println(fileName+" (modified)");
                 }
+            } else if (CWDBlob == null && !removeFiles.containsKey(curFile)){
+                System.out.println(fileName+" (deleted)");
             }
 
         }
@@ -197,7 +200,7 @@ public class Repository {
             String fileName = entry.getKey().getName();
             Blob fileBlob = entry.getValue();
             Blob CWDBlob = Blob.createBlob(fileName);
-            if (CWDFiles != null) {
+            if (CWDFiles != null && CWDBlob != null) {
                 if (!CWDFiles.contains(fileName)) {
                     System.out.println(fileName+" (deleted)");
                 } else if (!Objects.equals(CWDBlob.getHashId(), fileBlob.getHashId())) {
