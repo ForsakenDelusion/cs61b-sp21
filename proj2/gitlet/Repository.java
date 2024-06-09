@@ -180,7 +180,7 @@ public class Repository {
                     writeContents(join(curFile), curBlobs.get(curFile).getContent());
                 }
             } else {
-                System.out.println("File does not exist in that commit.");
+                System.out.println("No commit with that id exists.");
             }
         }
 
