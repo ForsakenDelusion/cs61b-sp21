@@ -139,26 +139,11 @@ public class Repository {
                     System.out.println("No need to checkout the current branch.");
                 } else {
                     String commitId = readContentsAsString(join(GITLET_REFERENCE, branchName));
-                    Commit curCommit = Commit.getCommitById(commitId);
-                    Map<File, Blob> curBlobs = curCommit.getBlobs();
-                    Set<String> unTrackedFiles = untrackedFiles();
-                    Set<File> trackedFiles = trackedFiles();
-                    for (Blob curBlob : curBlobs.values()) {
-                        if (unTrackedFiles.contains(curBlob.getFileName())) {
-                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                        } else {
-                            writeContents(join(CWD, curBlob.getFileName()), curBlob.getContent());
-                        }
-                    }
-                    for (File trackedFile : trackedFiles) {
-                        if (!curBlobs.containsKey(trackedFile)) {
-                            restrictedDelete(trackedFile);
-                        }
-                    }
+                    checkoutById(commitId);
                     writeContents(join(GITLET_REFERENCE,"HEAD"), branchName);
                 }
             }
-        }else if (args.length == 3) {
+        }else if (args.length == 3 && Objects.equals(args[1], "--")) {
             String fileName = args[2];
             File curFile = new File(CWD, fileName);
             Commit curCommit = Commit.getCurrentCommit();
@@ -168,7 +153,7 @@ public class Repository {
             } else {
                 System.out.println("File does not exist in that commit.");
             }
-        }else if (args.length == 4) {
+        }else if (args.length == 4 && args[2].equals("--")) {
             String curCommitId = args[1];
             String curFileName = args[3];
             File curCommitObj = new File(GITLET_COMMIT, curCommitId);
@@ -303,5 +288,29 @@ public class Repository {
             }
         }
         return untrackedFileSet;
+    }
+
+    static void reset(String commitId) {
+        checkoutById(commitId);
+        writeContents(join(GITLET_REFERENCE, readContentsAsString(join(GITLET_REFERENCE, "HEAD"))), commitId);
+    }
+
+    static void checkoutById(String commitId) {
+        Commit curCommit = Commit.getCommitById(commitId);
+        Map<File, Blob> curBlobs = curCommit.getBlobs();
+        Set<String> unTrackedFiles = untrackedFiles();
+        Set<File> trackedFiles = trackedFiles();
+        for (Blob curBlob : curBlobs.values()) {
+            if (unTrackedFiles.contains(curBlob.getFileName())) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+            } else {
+                writeContents(join(CWD, curBlob.getFileName()), curBlob.getContent());
+            }
+        }
+        for (File trackedFile : trackedFiles) {
+            if (!curBlobs.containsKey(trackedFile)) {
+                restrictedDelete(trackedFile);
+            }
+        }
     }
 }
