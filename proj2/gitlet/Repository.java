@@ -185,18 +185,22 @@ public class Repository {
             File curFile = entry.getKey();
             Blob fileBlob = entry.getValue();
             Blob CWDBlob = Blob.createBlob(fileName);
+            Map<File,Blob> IndexBlobs = curIndex.getBlobSet();
             if (CWDFiles != null && CWDBlob != null){
                 if (!CWDFiles.contains(fileName) && !curStagedFiles.containsKey(curFile)) {
                     System.out.println(fileName+" (deleted)");
                 } else if (!Objects.equals(CWDBlob.getHashId(), fileBlob.getHashId())) {
                     System.out.println(fileName+" (modified)");
+                    if (IndexBlobs.containsKey(curFile) && !IndexBlobs.get(curFile).equals(CWDBlob)) {
+                        System.out.println(fileName+" (modified)");
+                    }
                 }
             } else if (CWDBlob == null && !removeFiles.containsKey(curFile)){
                 System.out.println(fileName+" (deleted)");
             }
 
         }
-        for (Map.Entry<File,Blob> entry : curStagedFiles.entrySet()) {
+       /* for (Map.Entry<File,Blob> entry : curStagedFiles.entrySet()) {
             String fileName = entry.getKey().getName();
             Blob fileBlob = entry.getValue();
             Blob CWDBlob = Blob.createBlob(fileName);
@@ -206,8 +210,10 @@ public class Repository {
                 } else if (!Objects.equals(CWDBlob.getHashId(), fileBlob.getHashId())) {
                     System.out.println(fileName+" (modified)");
                 }
+            } else if (CWDBlob == null){
+                System.out.println(fileName+" (deleted)");
             }
-        }
+        }*/
 
 
         System.out.println();
