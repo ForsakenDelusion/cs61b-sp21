@@ -204,7 +204,7 @@ public class Commit implements Serializable {
         writeContents(join(GITLET_REFERENCE,branchName),readContentsAsString(GITLET_HEAD));
     }
 
-    public static File findCommit(String commitID) {
+    public static String findCommit(String commitID) {
         String commit = null;
         List<String> allCommits = plainFilenamesIn(GITLET_COMMIT);
         for (String c : allCommits) {
@@ -218,7 +218,7 @@ public class Commit implements Serializable {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
-        return join(GITLET_COMMIT,commit);
+        return commit;
     }
 
 }
