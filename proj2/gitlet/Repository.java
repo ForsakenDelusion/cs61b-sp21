@@ -239,7 +239,7 @@ public class Repository {
     }
 
     public static void branch(String branchName) {
-        File branchFile = new File(CWD, branchName);
+        File branchFile = new File(GITLET_REFERENCE, branchName);
         if (branchFile.exists()) {
             System.out.println("A branch with that name already exists.");
         } else {
