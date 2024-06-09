@@ -186,9 +186,9 @@ public class Repository {
             Blob CWDBlob = Blob.createBlob(fileName);
             if (CWDFiles != null){
                 if (!CWDFiles.contains(fileName)) {
-                    System.out.println(fileName+" deleted");
+                    System.out.println(fileName+" (deleted");
                 } else if (CWDBlob != fileBlob) {
-                    System.out.println(fileName+" modified");
+                    System.out.println(fileName+" (modified)");
                 }
             }
 
@@ -199,9 +199,9 @@ public class Repository {
             Blob CWDBlob = Blob.createBlob(fileName);
             if (CWDFiles != null) {
                 if (!CWDFiles.contains(fileName)) {
-                    System.out.println(fileName+" deleted");
+                    System.out.println(fileName+" (deleted)");
                 } else if (CWDBlob != fileBlob) {
-                    System.out.println(fileName+" modified");
+                    System.out.println(fileName+" (modified)");
                 }
             }
         }
@@ -212,7 +212,7 @@ public class Repository {
         if (CWDFiles != null) {
             for (String fileName : CWDFiles) {
                 File curFile = join(CWD, fileName);
-                if (!curStagedFiles.containsKey(curFile)) {
+                if (!curStagedFiles.containsKey(curFile) && !curCommitStagedBlobs.containsKey(curFile)) {
                     System.out.println(fileName);
                 }
             }
