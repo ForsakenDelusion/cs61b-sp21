@@ -48,6 +48,9 @@ public class Main {
             case "rm-branch":
                 Repository.rmBranch(args[1]);
                 break;
+            default:
+                System.out.println("Incorrect operands.");
+                break;
         }
     }
 }

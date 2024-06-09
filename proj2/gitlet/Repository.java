@@ -158,7 +158,7 @@ public class Repository {
                     writeContents(join(GITLET_REFERENCE,"HEAD"), branchName);
                 }
             }
-        } else if (args.length == 3) {
+        }else if (args.length == 3) {
             String fileName = args[2];
             File curFile = new File(CWD, fileName);
             Commit curCommit = Commit.getCurrentCommit();
@@ -168,7 +168,7 @@ public class Repository {
             } else {
                 System.out.println("File does not exist in that commit.");
             }
-        } else if (args.length == 4) {
+        }else if (args.length == 4) {
             String curCommitId = args[1];
             String curFileName = args[3];
             File curCommitObj = new File(GITLET_COMMIT, curCommitId);
@@ -184,6 +184,8 @@ public class Repository {
             } else {
                 System.out.println("No commit with that id exists.");
             }
+        }else {
+            System.out.println("Incorrect operands.");
         }
 
     }
