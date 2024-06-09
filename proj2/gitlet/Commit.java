@@ -1,6 +1,6 @@
 package gitlet;
 
-// TODO: any imports you need here
+
 
 import java.io.File;
 import java.io.Serializable;
@@ -12,14 +12,14 @@ import static gitlet.Utils.*;
 import static gitlet.Utils.plainFilenamesIn;
 
 /** Represents a gitlet commit object.
- *  TODO: It's a good idea to give a description here of what else this Class
+ *
  *  does at a high level.
  *
- *  @author TODO
+ *  @author Forsaken Delusion
  */
 public class Commit implements Serializable {
     /**
-     * TODO: add instance variables here.
+     *
      *
      * List all instance variables of the Commit class here with a useful
      * comment above them describing what that variable represents and how that
@@ -32,8 +32,7 @@ public class Commit implements Serializable {
     String parentCommit;
     String branch;
     String date;
-    Map<File,Blob> blobs = new HashMap<>();
-    /* TODO: fill in the rest of this class. */
+    Map<File, Blob> blobs = new HashMap<>();
     SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy Z");
 
     Commit(String message) {
@@ -204,4 +203,22 @@ public class Commit implements Serializable {
     static void updateBranch(String branchName) {
         writeContents(join(GITLET_REFERENCE,branchName),readContentsAsString(GITLET_HEAD));
     }
+
+    public static File findCommit(String commitID) {
+        String commit = null;
+        List<String> allCommits = plainFilenamesIn(GITLET_COMMIT);
+        for (String c : allCommits) {
+            if (c.startsWith(commitID)) {
+                commit = c;
+                break;
+            }
+        }
+        // If no commit with the given id exists.
+        if (commit == null) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+        return join(GITLET_COMMIT,commit);
+    }
+
 }

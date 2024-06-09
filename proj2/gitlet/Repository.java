@@ -131,7 +131,7 @@ public class Repository {
     static void checkout(String[] args) {
         if (args.length == 2) {
             String branchName = args[1];
-            File branchFile = join(GITLET_REFERENCE,branchName);
+            File branchFile = join(GITLET_REFERENCE, branchName);
             if (!branchFile.exists()) {
                 System.out.println("No such branch exists.");
             } else {
@@ -140,11 +140,11 @@ public class Repository {
                 } else {
                     String commitId = readContentsAsString(join(GITLET_REFERENCE, branchName));
                     checkoutById(commitId);
-                    writeContents(join(GITLET_REFERENCE,"HEAD"), branchName);
-                    writeContents(GITLET_HEAD,commitId);
+                    writeContents(join(GITLET_REFERENCE, "HEAD"), branchName);
+                    writeContents(GITLET_HEAD, commitId);
                 }
             }
-        }else if (args.length == 3 && Objects.equals(args[1], "--")) {
+        } else if (args.length == 3 && Objects.equals(args[1], "--")) {
             String fileName = args[2];
             File curFile = new File(CWD, fileName);
             Commit curCommit = Commit.getCurrentCommit();
@@ -154,7 +154,7 @@ public class Repository {
             } else {
                 System.out.println("File does not exist in that commit.");
             }
-        }else if (args.length == 4 && args[2].equals("--")) {
+        } else if (args.length == 4 && args[2].equals("--")) {
             String curCommitId = args[1];
             String curFileName = args[3];
             File curCommitObj = new File(GITLET_COMMIT, curCommitId);
@@ -170,7 +170,7 @@ public class Repository {
             } else {
                 System.out.println("No commit with that id exists.");
             }
-        }else {
+        } else {
             System.out.println("Incorrect operands.");
         }
 
@@ -292,13 +292,13 @@ public class Repository {
     }
 
     static void reset(String commitId) {
-        Index.resetIndex();
         checkoutById(commitId);
         writeContents(join(GITLET_REFERENCE, readContentsAsString(join(GITLET_REFERENCE, "HEAD"))), commitId);
-        writeContents(GITLET_HEAD,commitId);
+        writeContents(GITLET_HEAD, commitId);
     }
 
     static void checkoutById(String commitId) {
+        Index.resetIndex();
         Commit curCommit = Commit.getCommitById(commitId);
         Map<File, Blob> curBlobs = curCommit.getBlobs();
         Set<String> unTrackedFiles = untrackedFiles();
