@@ -293,6 +293,7 @@ public class Repository {
     static void reset(String commitId) {
         checkoutById(commitId);
         writeContents(join(GITLET_REFERENCE, readContentsAsString(join(GITLET_REFERENCE, "HEAD"))), commitId);
+        writeContents(GITLET_HEAD,commitId);
     }
 
     static void checkoutById(String commitId) {
