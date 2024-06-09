@@ -173,20 +173,17 @@ public class Repository {
             String curFileName = args[3];
             File curCommitObj = new File(GITLET_COMMIT, curCommitId);
             File curFile = new File(CWD, curFileName);
-            if (curCommitObj.exists()){
-                if (curCommitObj.exists()) {
-                    Commit curCommit = Commit.getCommitById(curCommitId);
-                    Map<File, Blob> curBlobs = curCommit.getBlobs();
-                    if (curBlobs.containsKey(curFile)) {
-                        writeContents(join(curFile), curBlobs.get(curFile).getContent());
-                    }
+            if (curCommitObj.exists()) {
+                Commit curCommit = Commit.getCommitById(curCommitId);
+                Map<File, Blob> curBlobs = curCommit.getBlobs();
+                if (curBlobs.containsKey(curFile)) {
+                    writeContents(join(curFile), curBlobs.get(curFile).getContent());
                 } else {
                     System.out.println("File does not exist in that commit.");
                 }
             } else {
                 System.out.println("No commit with that id exists.");
             }
-
         }
 
     }
