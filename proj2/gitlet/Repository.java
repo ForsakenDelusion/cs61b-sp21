@@ -101,7 +101,7 @@ public class Repository {
                 if(curCommit.getBlobs().containsKey(curFile)) {
                     curIndex.removeInBlobSet(curFile);
                     curIndex.addInDeleteBlobSet(curFile,curBlob);
-                    Utils.restrictedDelete(join(CWD,fileName));
+                    restrictedDelete(join(CWD,fileName));
                 } else System.out.println("No reason to remove the file.");
             }
         } else {
@@ -228,10 +228,23 @@ public class Repository {
 
         System.out.println();
         System.out.println("=== Untracked Files ===");
+        Commit tempCommit = Commit.getCurrentCommit();
+        Set<File> trackedFileSet = new HashSet<>();
+        while (true) {
+            trackedFileSet.addAll(tempCommit.getBlobs().keySet());
+            // Check if the parent commit ID is a "null" string, and stop the loop if it is
+            String parentCommitId = tempCommit.getParentCommit();
+            if ("null".equals(parentCommitId)) {
+                break;
+            }
+            // loop
+            tempCommit = Commit.getCommitById(parentCommitId);
+        }
+
         if (CWDFiles != null) {
             for (String fileName : CWDFiles) {
                 File curFile = join(CWD, fileName);
-                if (!curStagedFiles.containsKey(curFile) && !curCommitStagedBlobs.containsKey(curFile)) {
+                if (!curStagedFiles.containsKey(curFile) && !trackedFileSet.contains(curFile)) {
                     System.out.println(fileName);
                 }
             }
