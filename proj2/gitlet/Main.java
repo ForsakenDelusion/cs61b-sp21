@@ -10,6 +10,10 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO: what if args is empty?
+        if (args.length == 0) {
+            System.out.println("Please enter a command.");
+            System.exit(0);
+        }
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
@@ -49,7 +53,8 @@ public class Main {
                 Repository.rmBranch(args[1]);
                 break;
             default:
-                System.out.println("Incorrect operands.");
+                System.out.println("No command with that name exists.");
+                System.exit(0);
                 break;
         }
     }
