@@ -187,7 +187,7 @@ public class Repository {
             if (CWDFiles != null){
                 if (!CWDFiles.contains(fileName)) {
                     System.out.println(fileName+" (deleted)");
-                } else if (CWDBlob != fileBlob) {
+                } else if (!Objects.equals(CWDBlob.getHashId(), fileBlob.getHashId())) {
                     System.out.println(fileName+" (modified)");
                 }
             }
@@ -200,7 +200,7 @@ public class Repository {
             if (CWDFiles != null) {
                 if (!CWDFiles.contains(fileName)) {
                     System.out.println(fileName+" (deleted)");
-                } else if (CWDBlob != fileBlob) {
+                } else if (!Objects.equals(CWDBlob.getHashId(), fileBlob.getHashId())) {
                     System.out.println(fileName+" (modified)");
                 }
             }
