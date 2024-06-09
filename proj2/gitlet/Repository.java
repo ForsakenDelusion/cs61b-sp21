@@ -54,12 +54,20 @@ public class Repository {
     static void add(String fileName) {
         File curFile = new File(CWD, fileName);
         Index curIndex = Index.getCurrentIndex();
+        Blob curBlob = Blob.createBlob(fileName);
+        Blob commitBlob = Commit.getCurrentCommit().getBlobs().get(curFile);
         if(!curFile.exists()) {
             System.out.println("File does not exist.");
         } else {
             if (curIndex.getDeleteBlobs().containsKey(curFile)){
                 curIndex.removeInDeleteBlobSet(curFile);
-            } else curIndex.addInBlobSet(curFile,Blob.createBlob(fileName));
+            } else {
+                if (commitBlob != null && !Objects.equals(curBlob.getHashId(), commitBlob.getHashId())) {
+                    curIndex.addInBlobSet(curFile,Blob.createBlob(fileName));
+                } else if (commitBlob == null) {
+                    curIndex.addInBlobSet(curFile,Blob.createBlob(fileName));
+                }
+            }
 
         }
     }
