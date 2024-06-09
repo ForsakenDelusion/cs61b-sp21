@@ -174,6 +174,10 @@ public class Repository {
     }
 
     static void status() {
+        if (!(new File(CWD, ".gitlet")).isDirectory()) {
+            System.out.println("Not in an initialized Gitlet directory.");
+            System.exit(0);
+        }
         String curBranch = readContentsAsString(join(GITLET_REFERENCE, "HEAD"));
         List<String> branchList = plainFilenamesIn(GITLET_REFERENCE);
         Index curIndex = Index.getCurrentIndex();
