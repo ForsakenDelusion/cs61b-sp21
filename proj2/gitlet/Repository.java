@@ -265,7 +265,7 @@ public class Repository {
             if (readContentsAsString(join(GITLET_REFERENCE, "HEAD")).equals(deleteBranch)) {
                 System.out.println("Cannot remove the current branch.");
             } else {
-                restrictedDelete(deleteBranchFile);
+                deleteBranchFile.delete();
             }
         }
     }
