@@ -5,17 +5,17 @@ import java.util.*;
 
 import static gitlet.Utils.*;
 
-// TODO: any imports you need here
+
 
 /** Represents a gitlet repository.
- *  TODO: It's a good idea to give a description here of what else this Class
+ *
  *  does at a high level.
  *
- *  @author TODO
+ *  @author Forsaken Delusion
  */
 public class Repository {
     /**
-     * TODO: add instance variables here.
+     *
      *
      * List all instance variables of the Repository class here with a useful
      * comment above them describing what that variable represents and how that
@@ -33,21 +33,21 @@ public class Repository {
     public static final File GITLET_COMMIT = join(GITLET_DIR, "commit");
 
 
-    /* TODO: fill in the rest of this class. */
+
     /** init repo */
-    static void init(){
-        if(GITLET_OBJECTS.exists()) {
+    static void init() {
+        if (GITLET_OBJECTS.exists()) {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
-            return ;
+            return;
         }
         GITLET_DIR.mkdir();
         GITLET_OBJECTS.mkdir();
         GITLET_REFERENCE.mkdir();
         GITLET_COMMIT.mkdir();
         writeContents(GITLET_HEAD, new Commit().getId());
-        writeContents(join(GITLET_REFERENCE,"master"), readContentsAsString(GITLET_HEAD));
+        writeContents(join(GITLET_REFERENCE, "master"), readContentsAsString(GITLET_HEAD));
         writeObject(GITLET_INDEX, new Index());
-        writeContents(join(GITLET_REFERENCE,"HEAD"),"master");
+        writeContents(join(GITLET_REFERENCE, "HEAD"), "master");
     }
 
     /** copy the work file into .gitlet/object dictionary and create an index */
@@ -56,16 +56,16 @@ public class Repository {
         Index curIndex = Index.getCurrentIndex();
         Blob curBlob = Blob.createBlob(fileName);
         Blob commitBlob = Commit.getCurrentCommit().getBlobs().get(curFile);
-        if(!curFile.exists()) {
+        if (!curFile.exists()) {
             System.out.println("File does not exist.");
         } else {
-            if (curIndex.getDeleteBlobs().containsKey(curFile)){
+            if (curIndex.getDeleteBlobs().containsKey(curFile)) {
                 curIndex.removeInDeleteBlobSet(curFile);
             } else {
                 if (commitBlob != null && !Objects.equals(curBlob.getHashId(), commitBlob.getHashId())) {
-                    curIndex.addInBlobSet(curFile,Blob.createBlob(fileName));
+                    curIndex.addInBlobSet(curFile, Blob.createBlob(fileName));
                 } else if (commitBlob == null) {
-                    curIndex.addInBlobSet(curFile,Blob.createBlob(fileName));
+                    curIndex.addInBlobSet(curFile, Blob.createBlob(fileName));
                 }
             }
 
@@ -74,15 +74,20 @@ public class Repository {
 
     /** Create a new commit and update the HEAD reference */
     static void commit(String message) {
-        if(message.isEmpty()) {
+        if (message.isEmpty()) {
             System.out.println("Please enter a commit message.");
         } else {
-            if (!Index.getCurrentIndex().getBlobSet().isEmpty() || !Index.getCurrentIndex().getDeleteBlobs().isEmpty()) {
+            Index curIndex = Index.getCurrentIndex();
+            boolean indexBlobIsEmpty = curIndex.getBlobSet().isEmpty();
+            boolean indexDeletedBlob = curIndex.getDeleteBlobs().isEmpty();
+            if (!indexBlobIsEmpty || !indexDeletedBlob) {
                 Commit commit = new Commit(message);
                 Commit.updateHEAD(commit);
-                Commit.updateBranch();
+                Commit.updateBranch(commit.getBranch());
                 Index.resetIndex();
-            } else System.out.println("No changes added to the commit.");
+            } else {
+                System.out.println("No changes added to the commit.");
+            }
         }
 
 
@@ -93,27 +98,29 @@ public class Repository {
         Index curIndex = Index.getCurrentIndex();
         File curFile = new File(CWD, fileName);
         Commit curCommit = Commit.getCurrentCommit();
-        if(curFile.exists()) {
-        Blob curBlob = new Blob(fileName);
-            if(!curIndex.getBlobSet().isEmpty()) {
+        if (curFile.exists()) {
+            Blob curBlob = new Blob(fileName);
+            if (!curIndex.getBlobSet().isEmpty()) {
                 curIndex.removeInBlobSet(curFile);
             } else {
-                if(curCommit.getBlobs().containsKey(curFile)) {
+                if (curCommit.getBlobs().containsKey(curFile)) {
                     curIndex.removeInBlobSet(curFile);
-                    curIndex.addInDeleteBlobSet(curFile,curBlob);
-                    restrictedDelete(join(CWD,fileName));
-                } else System.out.println("No reason to remove the file.");
+                    curIndex.addInDeleteBlobSet(curFile, curBlob);
+                    restrictedDelete(join(CWD, fileName));
+                } else {
+                    System.out.println("No reason to remove the file.");
+                }
             }
         } else {
-            curIndex.addInDeleteBlobSet(curFile,curCommit.getBlobs().get(curFile));
+            curIndex.addInDeleteBlobSet(curFile, curCommit.getBlobs().get(curFile));
         }
     }
 
-    static void log(){
+    static void log() {
         Commit.log();
     }
 
-    static void globalLog(){
+    static void globalLog() {
         Commit.globalLog();
     }
 
@@ -122,156 +129,175 @@ public class Repository {
     }
 
     static void checkout(String[] args) {
-        if(args.length == 2) {
-            return;
+        if (args.length == 2) {
+            String branchName = args[1];
+            File branchFile = join(GITLET_REFERENCE,branchName);
+            if (!branchFile.exists()) {
+                System.out.println("No such branch exists.");
+            } else {
+                if (Objects.equals(branchName, readContentsAsString(join(GITLET_REFERENCE, "HEAD")))) {
+                    System.out.println("No need to checkout the current branch.");
+                } else {
+                    String commitId = readContentsAsString(join(GITLET_REFERENCE, branchName));
+                    Commit curCommit = Commit.getCommitById(commitId);
+                    Map<File, Blob> curBlobs = curCommit.getBlobs();
+                    Set<String> unTrackedFiles = untrackedFiles();
+                    Set<File> trackedFiles = trackedFiles();
+                    for (Blob curBlob : curBlobs.values()) {
+                        if (unTrackedFiles.contains(curBlob.getFileName())) {
+                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                        } else {
+                            writeContents(join(CWD, curBlob.getFileName()), curBlob.getContent());
+                        }
+                    }
+                    for (File trackedFile : trackedFiles) {
+                        if (!curBlobs.containsKey(trackedFile)) {
+                            restrictedDelete(trackedFile);
+                        }
+                    }
+                    writeContents(join(GITLET_REFERENCE,"HEAD"), branchName);
+                }
+            }
         } else if (args.length == 3) {
             String fileName = args[2];
             File curFile = new File(CWD, fileName);
             Commit curCommit = Commit.getCurrentCommit();
-            Map<File,Blob> curBlobs = curCommit.getBlobs();
-            if(curBlobs.containsKey(curFile)) {
-                writeContents(join(curFile),curBlobs.get(curFile).getContent());
-                return;
-            } else System.out.println("File does not exist in that commit.");
+            Map<File, Blob> curBlobs = curCommit.getBlobs();
+            if (curBlobs.containsKey(curFile)) {
+                writeContents(join(curFile), curBlobs.get(curFile).getContent());
+            } else {
+                System.out.println("File does not exist in that commit.");
+            }
         } else if (args.length == 4) {
             String curCommitId = args[1];
             String curFileName = args[3];
             File curCommitObj = new File(GITLET_COMMIT, curCommitId);
             File curFile = new File(CWD, curFileName);
-            if(curCommitObj.exists()) {
+            if (curCommitObj.exists()) {
                 Commit curCommit = Commit.getCommitById(curCommitId);
-                Map<File,Blob> curBlobs = curCommit.getBlobs();
-                if(curBlobs.containsKey(curFile)) {
-                    writeContents(join(curFile),curBlobs.get(curFile).getContent());
+                Map<File, Blob> curBlobs = curCommit.getBlobs();
+                if (curBlobs.containsKey(curFile)) {
+                    writeContents(join(curFile), curBlobs.get(curFile).getContent());
                 }
-            } else System.out.println("File does not exist in that commit.");
-
-
+            } else {
+                System.out.println("File does not exist in that commit.");
+            }
         }
 
     }
 
-    static void status(){
-        String curBranch = readContentsAsString(join(GITLET_REFERENCE,"HEAD"));
+    static void status() {
+        String curBranch = readContentsAsString(join(GITLET_REFERENCE, "HEAD"));
         List<String> branchList = plainFilenamesIn(GITLET_REFERENCE);
         Index curIndex = Index.getCurrentIndex();
         Map<File, Blob> curStagedFiles = curIndex.getBlobSet();
         Map<File, Blob> removeFiles = curIndex.getDeleteBlobs();
         Commit curCommit = Commit.getCurrentCommit();
-        Map<File,Blob> curCommitStagedBlobs = curCommit.getBlobs();
-        List<String> CWDFiles = plainFilenamesIn(CWD);
-
-        /*for (File file : curCommitStagedBlobs.keySet()) {
-            if (CWDFiles != null && !CWDFiles.contains(file.getName())) {
-                curIndex.addInDeleteBlobSet(file,curCommitStagedBlobs.get(file));
-            }
-            removeFiles = Index.getCurrentIndex().getDeleteBlobs();
-        }*/
+        Map<File, Blob> curCommitStagedBlobs = curCommit.getBlobs();
+        List<String> cwdFiles = plainFilenamesIn(CWD);
 
         System.out.println("=== Branches ===");
-        System.out.println("*"+curBranch);
-        for(String branch : branchList) {
-            if(!Objects.equals(branch, curBranch) && !branch.equals("HEAD")) {
+        System.out.println("*" + curBranch);
+        for (String branch : branchList) {
+            if (!Objects.equals(branch, curBranch) && !branch.equals("HEAD")) {
                 System.out.println(branch);
             }
         }
         System.out.println();
         System.out.println("=== Staged Files ===");
-        for(File file : curStagedFiles.keySet()) {
+        for (File file : curStagedFiles.keySet()) {
             System.out.println(file.getName());
         }
 
         System.out.println();
         System.out.println("=== Removed Files ===");
-        for(File file : removeFiles.keySet()) {
+        for (File file : removeFiles.keySet()) {
             System.out.println(file.getName());
         }
 
 
         System.out.println();
         System.out.println("=== Modifications Not Staged For Commit ===");
-        for(Map.Entry<File,Blob> entry : curCommitStagedBlobs.entrySet()) {
+        for (Map.Entry<File, Blob> entry : curCommitStagedBlobs.entrySet()) {
             String fileName = entry.getKey().getName();
             File curFile = entry.getKey();
             Blob fileBlob = entry.getValue();
-            Blob CWDBlob = Blob.createBlob(fileName);
-            Map<File,Blob> IndexBlobs = curIndex.getBlobSet();
-            if (CWDFiles != null && CWDBlob != null){
-                if (!CWDFiles.contains(fileName) && !curStagedFiles.containsKey(curFile)) {
-                    System.out.println(fileName+" (deleted)");
-                } else if (!Objects.equals(CWDBlob.getHashId(), fileBlob.getHashId())) {
-                    System.out.println(fileName+" (modified)");
-                    if (IndexBlobs.containsKey(curFile) && !IndexBlobs.get(curFile).equals(CWDBlob)) {
-                        System.out.println(fileName+" (modified)");
+            Blob cwdBlob = Blob.createBlob(fileName);
+            Map<File, Blob> indexBlobs = curIndex.getBlobSet();
+            if (cwdFiles != null && cwdBlob != null) {
+                if (!cwdFiles.contains(fileName) && !curStagedFiles.containsKey(curFile)) {
+                    System.out.println(fileName + " (deleted)");
+                } else if (!Objects.equals(cwdBlob.getHashId(), fileBlob.getHashId())) {
+                    System.out.println(fileName + " (modified)");
+                    if (indexBlobs.containsKey(curFile) && !indexBlobs.get(curFile).equals(cwdBlob)) {
+                        System.out.println(fileName + " (modified)");
                     }
                 }
-            } else if (CWDBlob == null && !removeFiles.containsKey(curFile)){
-                System.out.println(fileName+" (deleted)");
+            } else if (cwdBlob == null && !removeFiles.containsKey(curFile)) {
+                System.out.println(fileName + " (deleted)");
             }
 
         }
-       /* for (Map.Entry<File,Blob> entry : curStagedFiles.entrySet()) {
-            String fileName = entry.getKey().getName();
-            Blob fileBlob = entry.getValue();
-            Blob CWDBlob = Blob.createBlob(fileName);
-            if (CWDFiles != null && CWDBlob != null) {
-                if (!CWDFiles.contains(fileName)) {
-                    System.out.println(fileName+" (deleted)");
-                } else if (!Objects.equals(CWDBlob.getHashId(), fileBlob.getHashId())) {
-                    System.out.println(fileName+" (modified)");
-                }
-            } else if (CWDBlob == null){
-                System.out.println(fileName+" (deleted)");
-            }
-        }*/
-
 
         System.out.println();
         System.out.println("=== Untracked Files ===");
-        Commit tempCommit = Commit.getCurrentCommit();
-        Set<File> trackedFileSet = new HashSet<>();
-        while (true) {
-            trackedFileSet.addAll(tempCommit.getBlobs().keySet());
-            // Check if the parent commit ID is a "null" string, and stop the loop if it is
-            String parentCommitId = tempCommit.getParentCommit();
-            if ("null".equals(parentCommitId)) {
-                break;
-            }
-            // loop
-            tempCommit = Commit.getCommitById(parentCommitId);
-        }
-
-        if (CWDFiles != null) {
-            for (String fileName : CWDFiles) {
-                File curFile = join(CWD, fileName);
-                if (!curStagedFiles.containsKey(curFile) && !trackedFileSet.contains(curFile)) {
-                    System.out.println(fileName);
-                }
-            }
+        Set<String> untrackedFiles = untrackedFiles();
+        for (String fileName : untrackedFiles) {
+            System.out.println(fileName);
         }
         System.out.println();
-
     }
 
     public static void branch(String branchName) {
         File branchFile = new File(CWD, branchName);
-        if(branchFile.exists()) {
+        if (branchFile.exists()) {
             System.out.println("A branch with that name already exists.");
         } else {
-            writeContents(join(GITLET_REFERENCE,branchName),readContentsAsString(GITLET_HEAD));
-            writeContents(join(GITLET_REFERENCE,"HEAD"),branchName);
+            writeContents(join(GITLET_REFERENCE, branchName), readContentsAsString(GITLET_HEAD));
         }
     }
 
     public static void rmBranch(String deleteBranch) {
         File deleteBranchFile = new File(GITLET_REFERENCE, deleteBranch);
-        if(!deleteBranchFile.exists()) {
-        System.out.println("A branch with that name does not exist.");
+        if (!deleteBranchFile.exists()) {
+            System.out.println("A branch with that name does not exist.");
         } else {
             if (readContentsAsString(join(GITLET_REFERENCE, "HEAD")).equals(deleteBranch)) {
                 System.out.println("Cannot remove the current branch.");
-            } else restrictedDelete(join(GITLET_REFERENCE, deleteBranch));
-
+            } else {
+                restrictedDelete(join(GITLET_REFERENCE, deleteBranch));
+            }
         }
+    }
+
+    static Set<File> trackedFiles() {
+        Set<File> trackedFileSet = new HashSet<>();
+        Commit tempCommit = Commit.getCurrentCommit();
+        while (true) {
+            trackedFileSet.addAll(tempCommit.getBlobs().keySet());
+            String parentCommitId = tempCommit.getParentCommit();
+            if ("null".equals(parentCommitId)) {
+                break;
+            }
+            tempCommit = Commit.getCommitById(parentCommitId);
+        }
+        return trackedFileSet;
+    }
+
+    static Set<String> untrackedFiles() {
+        Set<String> untrackedFileSet = new HashSet<>();
+        Set<File> trackedFileSet = trackedFiles();
+        List<String> cwdFiles = plainFilenamesIn(CWD);
+        Index curIndex = Index.getCurrentIndex();
+        Map<File, Blob> curStagedFiles = curIndex.getBlobSet();
+        if (cwdFiles != null) {
+            for (String fileName : cwdFiles) {
+                File curFile = join(CWD, fileName);
+                if (!curStagedFiles.containsKey(curFile) && !trackedFileSet.contains(curFile)) {
+                    untrackedFileSet.add(fileName);
+                }
+            }
+        }
+        return untrackedFileSet;
     }
 }

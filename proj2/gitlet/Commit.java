@@ -201,7 +201,7 @@ public class Commit implements Serializable {
         }
     }
 
-    static void updateBranch() {
-        writeContents(join(GITLET_REFERENCE,readContentsAsString(join(GITLET_REFERENCE,"HEAD"))),readContentsAsString(join(GITLET_HEAD)));
+    static void updateBranch(String branchName) {
+        writeContents(join(GITLET_REFERENCE,branchName),readContentsAsString(GITLET_HEAD));
     }
 }
