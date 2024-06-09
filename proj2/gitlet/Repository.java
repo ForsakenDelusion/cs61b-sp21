@@ -141,6 +141,7 @@ public class Repository {
                     String commitId = readContentsAsString(join(GITLET_REFERENCE, branchName));
                     checkoutById(commitId);
                     writeContents(join(GITLET_REFERENCE,"HEAD"), branchName);
+                    writeContents(GITLET_HEAD,commitId);
                 }
             }
         }else if (args.length == 3 && Objects.equals(args[1], "--")) {
