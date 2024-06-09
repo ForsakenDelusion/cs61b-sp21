@@ -151,12 +151,12 @@ public class Repository {
         Map<File,Blob> curCommitStagedBlobs = curCommit.getBlobs();
         List<String> CWDFiles = plainFilenamesIn(CWD);
 
-        for (File file : curCommitStagedBlobs.keySet()) {
+        /*for (File file : curCommitStagedBlobs.keySet()) {
             if (CWDFiles != null && !CWDFiles.contains(file.getName())) {
                 curIndex.addInDeleteBlobSet(file,curCommitStagedBlobs.get(file));
             }
             removeFiles = Index.getCurrentIndex().getDeleteBlobs();
-        }
+        }*/
 
         System.out.println("=== Branches ===");
         System.out.println("*"+curBranch);
@@ -186,7 +186,7 @@ public class Repository {
             Blob CWDBlob = Blob.createBlob(fileName);
             if (CWDFiles != null){
                 if (!CWDFiles.contains(fileName)) {
-                    System.out.println(fileName+" (deleted");
+                    System.out.println(fileName+" (deleted)");
                 } else if (CWDBlob != fileBlob) {
                     System.out.println(fileName+" (modified)");
                 }
