@@ -451,6 +451,8 @@ public class Repository {
             }
         }
 
+
+
         commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".");
     }
 
