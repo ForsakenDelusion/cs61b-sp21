@@ -265,8 +265,13 @@ public class Repository {
         Set<File> trackedFileSet = new HashSet<>();
         Commit tempCommit = Commit.getCurrentCommit();
         while (true) {
-            trackedFileSet.addAll(tempCommit.getBlobs().keySet());
-            String parentCommitId = tempCommit.getParentCommit();
+            if (tempCommit != null) {
+                trackedFileSet.addAll(tempCommit.getBlobs().keySet());
+            }
+            String parentCommitId = null;
+            if (tempCommit != null) {
+                parentCommitId = tempCommit.getParentCommit();
+            }
             if ("null".equals(parentCommitId)) {
                 break;
             }
@@ -417,6 +422,12 @@ public class Repository {
                     }
                 }
 
+                if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob)) {
+                    String curFileContent = curCommitBlob.getContent();
+                    String givenFileContent = givenCommitBlob.getContent();
+                    String newContent = "";
+                }
+
                 if (givenCommitBlob != null && areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
                     curCommitMap.remove(splitCommitFile);
                     givenCommitMap.remove(splitCommitFile);
@@ -459,6 +470,8 @@ public class Repository {
 
         commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".");
     }
+
+
 
     static List<String> getCurBranchCommitIdList() {
         return Commit.getCommitList(readContentsAsString(GITLET_HEAD));
