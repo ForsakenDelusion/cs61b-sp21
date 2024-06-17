@@ -407,7 +407,8 @@ public class Repository {
                 splitCommitBlob = splitCommitMap.get(curCommitFile);
             }
             givenCommitBlob = givenCommitMap.get(curCommitFile);
-            if (splitCommitBlob == null && givenCommitBlob == null) {
+            if (splitCommitBlob == null && givenCommitBlob == null && curCommitBlob != null) {
+                add(curCommitFile.getName());
                 curCommitMap.remove(curCommitFile);
                 givenCommitMap.remove(curCommitFile);
             }
@@ -419,8 +420,9 @@ public class Repository {
                 splitCommitBlob = splitCommitMap.get(givenCommitFile);
             }
             curCommitBlob = curCommitMap.get(givenCommitFile);
-            if (splitCommitBlob == null && givenCommitBlob == null) {
-                checkout(new String[]{readContentsAsString(join(GITLET_REFERENCE,branch)),"--",givenCommitFile.getName()});
+            if (splitCommitBlob == null && givenCommitBlob != null && curCommitBlob == null) {
+                checkout(new String[]{"checkout", readContentsAsString(join(GITLET_REFERENCE,branch)),"--",givenCommitFile.getName()});
+                add(givenCommitFile.getName());
                 curCommitMap.remove(givenCommitFile);
                 givenCommitMap.remove(givenCommitFile);
             }
