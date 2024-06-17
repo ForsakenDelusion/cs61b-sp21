@@ -79,11 +79,12 @@ public class Commit implements Serializable {
 
     /** Get a Commit by ID */
     static Commit getCommitById(String id) {
-        File curCommitFile = join(GITLET_COMMIT, id);
-        if (!curCommitFile.exists()) {
-            return null;
+        List<String> commitList = plainFilenamesIn(GITLET_COMMIT);
+        if (commitList.contains(id)) {
+            File curCommitFile = join(GITLET_COMMIT, id);
+            return readObject(curCommitFile, Commit.class);
         }
-        return readObject(curCommitFile, Commit.class);
+        return null;
     }
 
 
