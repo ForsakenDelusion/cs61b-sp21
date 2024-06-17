@@ -423,20 +423,14 @@ public class Repository {
                 }
 
                 if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob)) {
-                    String curFileContent = curCommitBlob.getContent();
-                    String givenFileContent = givenCommitBlob.getContent();
-                    String newContent = "<<<<<<< HEAD\n" +
-                            curFileContent + "\n" +
-                            "=======\n" +
-                            givenFileContent + "\n" +
-                            ">>>>>>>";
+                    String newContent = getString(curCommitBlob, givenCommitBlob);
                     writeContents(splitCommitFile, newContent);
                     add(splitCommitFile.getName());
                     System.out.println("Encountered a merge conflict.");
                     return;
                 }
 
-                if (givenCommitBlob != null && areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                if (areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
                     curCommitMap.remove(splitCommitFile);
                     givenCommitMap.remove(splitCommitFile);
                 }
@@ -479,6 +473,22 @@ public class Repository {
         commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".");
     }
 
+    private static String getString(Blob curCommitBlob, Blob givenCommitBlob) {
+        String curFileContent = null;
+        if (curCommitBlob != null) {
+            curFileContent = curCommitBlob.getContent();
+        }
+        String givenFileContent = null;
+        if (givenCommitBlob != null) {
+            givenFileContent = givenCommitBlob.getContent();
+        }
+        String newContent = "<<<<<<< HEAD\n" +
+                curFileContent + "\n" +
+                "=======\n" +
+                givenFileContent + "\n" +
+                ">>>>>>>";
+        return newContent;
+    }
 
 
     static List<String> getCurBranchCommitIdList() {
