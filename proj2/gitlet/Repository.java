@@ -332,6 +332,7 @@ public class Repository {
         Map<File, Blob> curCommitMap = curCommit.getBlobs();
         Map<File, Blob> givenCommitMap = givenCommit.getBlobs();
         String splitCommitId;
+        Set<String> untrackedFiles = untrackedFiles();
         if (!readObject(GITLET_INDEX, Index.class).blobs.isEmpty()) {
             System.out.println("You have uncommitted changes.");
             return;
@@ -374,22 +375,38 @@ public class Repository {
 
                 if (curCommitBlob != null && areBlobsEqual(curCommitBlob, splitCommitBlob)) {
                     if (givenCommitBlob != null && !areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                        if (untrackedFiles.contains(splitCommitFile.getName())) {
+                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                            return;
+                        }
                         writeContents(splitCommitFile, givenCommitBlob.getContent());
                         add(splitCommitFile.getName());
                         curCommitMap.remove(splitCommitFile);
                         givenCommitMap.remove(splitCommitFile);
                     } else if (givenCommitBlob == null && areBlobsEqual(curCommitBlob, splitCommitBlob)) {
+                        if (untrackedFiles.contains(splitCommitFile.getName())) {
+                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                            return;
+                        }
                         restrictedDelete(splitCommitFile);
                         curCommitMap.remove(splitCommitFile);
                         givenCommitMap.remove(splitCommitFile);
                     }
                 } else if(givenCommitBlob !=null && !areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
                     if (curCommitBlob != null && areBlobsEqual(curCommitBlob, splitCommitBlob)) {
+                        if (untrackedFiles.contains(splitCommitFile.getName())) {
+                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                            return;
+                        }
                         writeContents(splitCommitFile, curCommitBlob.getContent());
                         add(splitCommitFile.getName());
                         curCommitMap.remove(splitCommitFile);
                         givenCommitMap.remove(splitCommitFile);
                     } else if (curCommitBlob == null && areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                        if (untrackedFiles.contains(splitCommitFile.getName())) {
+                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                            return;
+                        }
                         restrictedDelete(splitCommitFile);
                         curCommitMap.remove(splitCommitFile);
                         givenCommitMap.remove(splitCommitFile);
