@@ -47,6 +47,20 @@ public class Commit implements Serializable {
         saveCommit();
     }
 
+    Commit(String message,String mergeCommit) {
+        this.message = message;
+        this.date = dateFormat.format(new Date());
+        this.branch = readContentsAsString(join(GITLET_REFERENCE,"HEAD"));
+        this.parentCommit = getCurrentCommit().getId();
+        this.mergeCommit = mergeCommit;
+        blobs.putAll(Index.getCurrentIndex().getBlobSet());
+        setID();
+        saveCommit();
+        updateHEAD(this);
+        updateBranch(this.getBranch());
+        Index.resetIndex();
+    }
+
     /** Init Commit constructor */
     Commit() {
         this.message = "initial commit";
