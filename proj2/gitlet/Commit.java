@@ -30,16 +30,18 @@ public class Commit implements Serializable {
     String id;
     String message;
     String parentCommit;
+    String mergeCommit;
     String branch;
     String date;
     Map<File, Blob> blobs = new HashMap<>();
-    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy Z");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("E MMM dd HH:mm:ss yyyy Z", Locale.ENGLISH);
 
     Commit(String message) {
         this.message = message;
         this.date = dateFormat.format(new Date());
         this.branch = readContentsAsString(join(GITLET_REFERENCE,"HEAD"));
         this.parentCommit = getCurrentCommit().getId();
+        this.mergeCommit = "null";
         blobs.putAll(Index.getCurrentIndex().getBlobSet());
         setID();
         saveCommit();
@@ -51,6 +53,7 @@ public class Commit implements Serializable {
         this.date = dateFormat.format(new Date(0));
         this.branch = "master";
         this.parentCommit = "null";
+        this.mergeCommit = "null";
         setID();
         saveCommit();
     }
@@ -73,6 +76,10 @@ public class Commit implements Serializable {
     /** parentId getter */
     String getParentCommit() {
         return this.parentCommit;
+    }
+
+    String getMergeCommit() {
+        return this.mergeCommit;
     }
 
 
@@ -101,6 +108,7 @@ public class Commit implements Serializable {
         List<Object> vals = new ArrayList<Object>();
         vals.add(this.message);
         vals.add(this.parentCommit);
+        vals.add(this.mergeCommit);
         vals.add(this.date);
         vals.add(this.branch);
         for(Blob b : blobs.values()) {
@@ -160,8 +168,13 @@ public class Commit implements Serializable {
         String curCommitID = commit.getId();
         String curCommitMessage = commit.getMessage();
         String curCommitDate = commit.getDate();
+        String curMergeCommit = commit.getMergeCommit();
         System.out.println("===");
         System.out.println("commit " + curCommitID);
+        if (!Objects.equals(curMergeCommit, "null")) {
+            String parentCommit = commit.getParentCommit();
+            System.out.println(parentCommit.substring(0, 7) + " " + parentCommit.substring(0, 7));
+        }
         System.out.println("Date: " + curCommitDate);
         System.out.println(curCommitMessage);
         System.out.println();
