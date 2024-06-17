@@ -328,13 +328,13 @@ public class Repository {
     }
 
     public static void merge(String branch) {
-
         File branchFile = new File(GITLET_REFERENCE, branch);
         if (!branchFile.exists()) {
             System.out.println("A branch with that name does not exist.");
             return;
         }
         boolean flag = false;
+        String branchId = readContentsAsString(join(GITLET_REFERENCE, branch));
         List<String> curCommitList = getCurBranchCommitIdList();
         List<String> givenCommitList = getGivenBranchCommitIdList(branch);
         Commit splitCommit = null;
@@ -484,7 +484,7 @@ public class Repository {
         if (flag) {
             System.out.println("Encountered a merge conflict.");
         }
-        commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".");
+        new Commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".", branchId);
     }
 
     private static String getString(Blob curCommitBlob, Blob givenCommitBlob) {
