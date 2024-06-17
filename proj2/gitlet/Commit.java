@@ -63,7 +63,13 @@ public class Commit implements Serializable {
     /** Get a Commit by ID */
     static Commit getCommitById(String id) {
         File curCommitFile = join(GITLET_COMMIT,id);
-        return readObject(curCommitFile,Commit.class);
+        if (curCommitFile.exists()) {
+            return readObject(curCommitFile,Commit.class);
+        } else {
+            System.out.println("No commit with that id exists.");
+            return null;
+        }
+
     }
 
     /** parentId getter */
