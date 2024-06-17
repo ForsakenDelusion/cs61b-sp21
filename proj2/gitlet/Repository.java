@@ -425,10 +425,18 @@ public class Repository {
                 if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob)) {
                     String curFileContent = curCommitBlob.getContent();
                     String givenFileContent = givenCommitBlob.getContent();
-                    String newContent = "";
+                    String newContent = "<<<<<<< HEAD\n" +
+                            curFileContent + "\n" +
+                            "=======\n" +
+                            givenFileContent + "\n" +
+                            ">>>>>>>";
+                    writeContents(splitCommitFile, newContent);
+                    add(splitCommitFile.getName());
+                    System.out.println("Encountered a merge conflict.");
+                    return;
                 }
 
-                if (givenCommitBlob != null && areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                if (areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
                     curCommitMap.remove(splitCommitFile);
                     givenCommitMap.remove(splitCommitFile);
                 }
