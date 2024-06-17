@@ -440,6 +440,10 @@ public class Repository {
             }
             curCommitBlob = curCommitMap.get(givenCommitFile);
             if (splitCommitBlob == null && givenCommitBlob != null && curCommitBlob == null) {
+                if (untrackedFiles.contains(givenCommitFile.getName())) {
+                    System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                    return;
+                }
                 checkout(new String[]{"checkout", readContentsAsString(join(GITLET_REFERENCE,branch)),"--",givenCommitFile.getName()});
                 add(givenCommitFile.getName());
                 curCommitMap.remove(givenCommitFile);
