@@ -332,7 +332,7 @@ public class Repository {
             System.out.println("A branch with that name does not exist.");
             return;
         }
-        else if (readObject(GITLET_INDEX, Index.class).blobs.isEmpty()) {
+        else if (!readObject(GITLET_INDEX, Index.class).blobs.isEmpty()) {
             System.out.println("You have uncommitted changes.");
             return;
         }
