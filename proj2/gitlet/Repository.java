@@ -317,4 +317,129 @@ public class Repository {
             }
         }
     }
+
+    public static void merge(String branch) {
+        List<String> curCommitList = getCurBranchCommitIdList();
+        List<String> givenCommitList = getGivenBranchCommitIdList(branch);
+        File branchFile = new File(GITLET_REFERENCE, branch);
+        Commit splitCommit = null;
+        Commit curCommit = Commit.getCurrentCommit();
+        Commit givenCommit = Commit.getCommitById(readContentsAsString(join(GITLET_REFERENCE, branch)));
+        Map<File, Blob> curCommitMap = curCommit.getBlobs();
+        Map<File, Blob> givenCommitMap = givenCommit.getBlobs();
+        String splitCommitId;
+        if (!branchFile.exists()) {
+            System.out.println("A branch with that name does not exist.");
+            return;
+        }
+        else if (readObject(GITLET_INDEX, Index.class).blobs.isEmpty()) {
+            System.out.println("You have uncommitted changes.");
+            return;
+        }
+        else if (Objects.equals(branch, readContentsAsString(join(GITLET_REFERENCE, "HEAD")))){
+            System.out.println("Cannot merge a branch with itself.");
+            return;
+        } else if (givenCommitList.contains(curCommitList.get(0))) {
+            System.out.println("Current branch fast-forwarded.");
+            return;
+        } else if (curCommitList.contains(givenCommitList.get(0))) {
+            System.out.println("Given branch is an ancestor of the current branch.");
+            return;
+        }
+        for (String curCommitId : curCommitList) {
+            if (givenCommitList.contains(curCommitId)) {
+                splitCommitId = curCommitId;
+                splitCommit = Commit.getCommitById(splitCommitId);
+                break;
+            }
+        }
+        Map<File, Blob> splitCommitMap = null;
+        if (splitCommit != null) {
+            splitCommitMap = splitCommit.getBlobs();
+        }
+        Blob splitCommitBlob = null;
+        Blob curCommitBlob = null;
+        Blob givenCommitBlob = null;
+        if (splitCommitMap != null) {
+            for (File splitCommitFile : splitCommitMap.keySet()) {
+                splitCommitBlob = splitCommitMap.get(splitCommitFile);
+                add(splitCommitFile.getName());
+                if (curCommitMap.containsKey(splitCommitFile)) {
+                    curCommitBlob = curCommitMap.get(splitCommitFile);
+                }
+                if (givenCommitMap.containsKey(splitCommitFile)) {
+                    givenCommitBlob = givenCommitMap.get(splitCommitFile);
+                }
+
+                if (curCommitBlob != null && areBlobsEqual(curCommitBlob, splitCommitBlob)) {
+                    if (givenCommitBlob != null && !areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                        writeContents(splitCommitFile, givenCommitBlob.getContent());
+                        curCommitMap.remove(splitCommitFile);
+                        givenCommitMap.remove(splitCommitFile);
+                    } else if (givenCommitBlob == null && areBlobsEqual(curCommitBlob, splitCommitBlob)) {
+                        restrictedDelete(splitCommitFile);
+                        curCommitMap.remove(splitCommitFile);
+                        givenCommitMap.remove(splitCommitFile);
+                    }
+                } else if(givenCommitBlob !=null && !areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                    if (curCommitBlob != null && areBlobsEqual(curCommitBlob, splitCommitBlob)) {
+                        writeContents(splitCommitFile, curCommitBlob.getContent());
+                        curCommitMap.remove(splitCommitFile);
+                        givenCommitMap.remove(splitCommitFile);
+                    } else if (curCommitBlob == null && areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                        restrictedDelete(splitCommitFile);
+                        curCommitMap.remove(splitCommitFile);
+                        givenCommitMap.remove(splitCommitFile);
+                    }
+                }
+
+                if (givenCommitBlob != null && areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                    curCommitMap.remove(splitCommitFile);
+                    givenCommitMap.remove(splitCommitFile);
+                }
+            }
+        }
+
+        for (File curCommitFile : curCommitMap.keySet()) {
+            curCommitBlob = curCommitMap.get(curCommitFile);
+            if (splitCommitMap != null) {
+                splitCommitBlob = splitCommitMap.get(curCommitFile);
+            }
+            givenCommitBlob = givenCommitMap.get(curCommitFile);
+            if (splitCommitBlob == null && givenCommitBlob == null) {
+                curCommitMap.remove(curCommitFile);
+                givenCommitMap.remove(curCommitFile);
+            }
+        }
+
+        for (File givenCommitFile : givenCommitMap.keySet()) {
+            givenCommitBlob = givenCommitMap.get(givenCommitFile);
+            if (splitCommitMap != null) {
+                splitCommitBlob = splitCommitMap.get(givenCommitFile);
+            }
+            curCommitBlob = curCommitMap.get(givenCommitFile);
+            if (splitCommitBlob == null && givenCommitBlob == null) {
+                checkout(new String[]{readContentsAsString(join(GITLET_REFERENCE,branch)),"--",givenCommitFile.getName()});
+                curCommitMap.remove(givenCommitFile);
+                givenCommitMap.remove(givenCommitFile);
+            }
+        }
+
+        commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".");
+    }
+
+    static List<String> getCurBranchCommitIdList() {
+        return Commit.getCommitList(readContentsAsString(GITLET_HEAD));
+    }
+
+    static List<String> getGivenBranchCommitIdList(String branch) {
+        return Commit.getCommitList(readContentsAsString(join(GITLET_REFERENCE, branch)));
+    }
+
+    static boolean areBlobsEqual(Blob curBlob, Blob givenBlob) {
+        String curBlobHash = curBlob.getHashId();
+        String givenBlobHash = givenBlob.getHashId();
+        return curBlobHash.equals(givenBlobHash);
+    }
+
 }
