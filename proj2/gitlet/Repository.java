@@ -319,20 +319,20 @@ public class Repository {
     }
 
     public static void merge(String branch) {
+        File branchFile = new File(GITLET_REFERENCE, branch);
+        if (!branchFile.exists()) {
+            System.out.println("A branch with that name does not exist.");
+            return;
+        }
         List<String> curCommitList = getCurBranchCommitIdList();
         List<String> givenCommitList = getGivenBranchCommitIdList(branch);
-        File branchFile = new File(GITLET_REFERENCE, branch);
         Commit splitCommit = null;
         Commit curCommit = Commit.getCurrentCommit();
         Commit givenCommit = Commit.getCommitById(readContentsAsString(join(GITLET_REFERENCE, branch)));
         Map<File, Blob> curCommitMap = curCommit.getBlobs();
         Map<File, Blob> givenCommitMap = givenCommit.getBlobs();
         String splitCommitId;
-        if (!branchFile.exists()) {
-            System.out.println("A branch with that name does not exist.");
-            return;
-        }
-        else if (!readObject(GITLET_INDEX, Index.class).blobs.isEmpty()) {
+        if (!readObject(GITLET_INDEX, Index.class).blobs.isEmpty()) {
             System.out.println("You have uncommitted changes.");
             return;
         }
@@ -346,6 +346,8 @@ public class Repository {
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
         }
+
+
         for (String curCommitId : curCommitList) {
             if (givenCommitList.contains(curCommitId)) {
                 splitCommitId = curCommitId;
