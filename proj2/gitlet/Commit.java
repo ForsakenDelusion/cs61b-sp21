@@ -67,9 +67,9 @@ public class Commit implements Serializable {
             return readObject(curCommitFile,Commit.class);
         } else {
             System.out.println("No commit with that id exists.");
-            return null;
+            System.exit(1);
         }
-
+        return null;
     }
 
     /** parentId getter */
