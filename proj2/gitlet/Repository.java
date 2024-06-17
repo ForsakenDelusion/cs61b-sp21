@@ -422,7 +422,7 @@ public class Repository {
                     }
                 }
 
-                if (curCommitBlob != null && givenCommitBlob != null && !areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob)) {
+                if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob)) {
                     String curFileContent = curCommitBlob.getContent();
                     String givenFileContent = givenCommitBlob.getContent();
                     String newContent = "<<<<<<< HEAD\n" +
@@ -436,7 +436,7 @@ public class Repository {
                     return;
                 }
 
-                if (areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                if (givenCommitBlob != null && areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
                     curCommitMap.remove(splitCommitFile);
                     givenCommitMap.remove(splitCommitFile);
                 }
@@ -490,9 +490,14 @@ public class Repository {
     }
 
     static boolean areBlobsEqual(Blob curBlob, Blob givenBlob) {
-        String curBlobHash = curBlob.getHashId();
-        String givenBlobHash = givenBlob.getHashId();
-        return curBlobHash.equals(givenBlobHash);
+        String curBlobHash = null;
+        String givenBlobHash = null;
+        if (curBlob != null && givenBlob != null) {
+            curBlobHash = curBlob.getHashId();
+            givenBlobHash = givenBlob.getHashId();
+            return curBlobHash.equals(givenBlobHash);
+        }
+        return false;
     }
 
 }
