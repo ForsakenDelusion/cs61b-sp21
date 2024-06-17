@@ -470,6 +470,7 @@ public class Repository {
 
 
 
+
         commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".");
     }
 
@@ -510,7 +511,7 @@ public class Repository {
             givenBlobHash = givenBlob.getHashId();
             return curBlobHash.equals(givenBlobHash);
         }
-        return false;
+        return true;
     }
 
 }
