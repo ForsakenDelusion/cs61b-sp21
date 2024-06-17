@@ -371,11 +371,12 @@ public class Repository {
         if (splitCommit != null) {
             splitCommitMap = splitCommit.getBlobs();
         }
-        Blob splitCommitBlob = null;
-        Blob curCommitBlob = null;
-        Blob givenCommitBlob = null;
+
         if (splitCommitMap != null) {
             for (File splitCommitFile : splitCommitMap.keySet()) {
+                Blob splitCommitBlob = null;
+                Blob curCommitBlob = null;
+                Blob givenCommitBlob = null;
                 splitCommitBlob = splitCommitMap.get(splitCommitFile);
                 if (curCommitMap.containsKey(splitCommitFile)) {
                     curCommitBlob = curCommitMap.get(splitCommitFile);
@@ -429,6 +430,8 @@ public class Repository {
                     writeContents(splitCommitFile, newContent);
                     add(splitCommitFile.getName());
                     flag = true;
+                    curCommitMap.remove(splitCommitFile);
+                    givenCommitMap.remove(splitCommitFile);
                 }
 
                 if (areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
@@ -440,6 +443,9 @@ public class Repository {
         }
 
         for (File curCommitFile : curCommitMap.keySet()) {
+            Blob splitCommitBlob = null;
+            Blob curCommitBlob = null;
+            Blob givenCommitBlob = null;
             curCommitBlob = curCommitMap.get(curCommitFile);
             if (splitCommitMap != null) {
                 splitCommitBlob = splitCommitMap.get(curCommitFile);
@@ -453,6 +459,9 @@ public class Repository {
         }
 
         for (File givenCommitFile : givenCommitMap.keySet()) {
+            Blob splitCommitBlob = null;
+            Blob curCommitBlob = null;
+            Blob givenCommitBlob = null;
             givenCommitBlob = givenCommitMap.get(givenCommitFile);
             if (splitCommitMap != null) {
                 splitCommitBlob = splitCommitMap.get(givenCommitFile);
