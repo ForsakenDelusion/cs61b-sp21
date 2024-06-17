@@ -422,7 +422,7 @@ public class Repository {
                     }
                 }
 
-                if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob)) {
+                if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
                     String newContent = getString(curCommitBlob, givenCommitBlob);
                     writeContents(splitCommitFile, newContent);
                     add(splitCommitFile.getName());
@@ -477,17 +477,20 @@ public class Repository {
         String curFileContent = null;
         if (curCommitBlob != null) {
             curFileContent = curCommitBlob.getContent();
+        } else {
+            curFileContent = "";
         }
         String givenFileContent = null;
         if (givenCommitBlob != null) {
             givenFileContent = givenCommitBlob.getContent();
+        } else {
+            givenFileContent = "";
         }
-        String newContent = "<<<<<<< HEAD\n" +
+        return "<<<<<<< HEAD\n" +
                 curFileContent + "\n" +
                 "=======\n" +
                 givenFileContent + "\n" +
                 ">>>>>>>";
-        return newContent;
     }
 
 
