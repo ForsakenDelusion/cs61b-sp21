@@ -422,7 +422,7 @@ public class Repository {
                     }
                 }
 
-                if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob)) {
+                if (curCommitBlob != null && givenCommitBlob != null && !areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob)) {
                     String curFileContent = curCommitBlob.getContent();
                     String givenFileContent = givenCommitBlob.getContent();
                     String newContent = "<<<<<<< HEAD\n" +
