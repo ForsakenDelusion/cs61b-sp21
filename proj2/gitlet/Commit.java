@@ -187,7 +187,7 @@ public class Commit implements Serializable {
         System.out.println("commit " + curCommitID);
         if (!Objects.equals(curMergeCommit, "null")) {
             String parentCommit = commit.getParentCommit();
-            System.out.println(parentCommit.substring(0, 7) + " " + parentCommit.substring(0, 7));
+            System.out.println("Merge: " + parentCommit.substring(0, 7) + " " + parentCommit.substring(0, 7));
         }
         System.out.println("Date: " + curCommitDate);
         System.out.println(curCommitMessage);
