@@ -301,6 +301,10 @@ public class Repository {
     static void checkoutById(String commitId) {
         Index.resetIndex();
         Commit curCommit = Commit.getCommitById(commitId);
+        if (curCommit == null) {
+            System.out.println("No commit with that id exists.");
+            return;
+        }
         Map<File, Blob> curBlobs = curCommit.getBlobs();
         Set<String> unTrackedFiles = untrackedFiles();
         Set<File> trackedFiles = trackedFiles();
