@@ -428,6 +428,7 @@ public class Repository {
                 if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
                     String newContent = getString(curCommitBlob, givenCommitBlob);
                     writeContents(splitCommitFile, newContent);
+                    add(splitCommitFile.getName());
                     flag = true;
                     curCommitMap.remove(splitCommitFile);
                     givenCommitMap.remove(splitCommitFile);
