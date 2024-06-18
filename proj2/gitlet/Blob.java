@@ -37,13 +37,17 @@ public class Blob implements Serializable {
     /** create a new Blob obj and save it in the objects dictionary then return this Blob obj */
     static Blob createBlob(String fileName) {
         File cwdFile = new File(CWD, fileName);
-        if(cwdFile.exists()){
+        if (cwdFile.exists()) {
             String content = readContentsAsString(cwdFile);
-            Blob newBlob =  new Blob(fileName,content);
-            File blobObj = join(GITLET_OBJECTS,newBlob.getHashId());
-            if (!blobObj.exists()) newBlob.saveBlob();
+            Blob newBlob =  new Blob(fileName, content);
+            File blobObj = join(GITLET_OBJECTS, newBlob.getHashId());
+            if (!blobObj.exists()) {
+                newBlob.saveBlob();
+            }
             return newBlob;
-        }else return null;
+        } else {
+            return null;
+        }
     }
 
     /** Set the hashID */
@@ -55,34 +59,34 @@ public class Blob implements Serializable {
     }
 
     /** HashId getter */
-    String getHashId(){
+    String getHashId() {
         return this.hashId;
     }
 
-    String getFileName(){
+    String getFileName() {
         return this.fileName;
     }
 
     /** Serialize current Blob */
     public void saveBlob() {
-        writeObject(join(GITLET_OBJECTS,this.getHashId()),this);
+        writeObject(join(GITLET_OBJECTS, this.getHashId()), this);
     }
 
     /** Find the corresponding Blob based on the file name of the workspace */
     static Blob findBlobByFileName(String fileName) {
-        File cwdFile = new File(CWD,fileName);
+        File cwdFile = new File(CWD, fileName);
         String content = readContentsAsString(cwdFile);
-        Blob newBlob =  new Blob(fileName,content);
-        File blobObj = join(GITLET_OBJECTS,newBlob.getHashId());
-        if (blobObj.exists())  return readObject(blobObj,Blob.class);
+        Blob newBlob =  new Blob(fileName, content);
+        File blobObj = join(GITLET_OBJECTS, newBlob.getHashId());
+        if (blobObj.exists())  return readObject(blobObj, Blob.class);
         return null;
     }
 
     /** Delete the Blob in objects dictionary */
     static void deleteBlobInObject(Blob blob) {
         String hashId = blob.getHashId();
-        File searchBlob = join(GITLET_OBJECTS,hashId);
-        if(searchBlob.exists()) {
+        File searchBlob = join(GITLET_OBJECTS, hashId);
+        if (searchBlob.exists()) {
             Utils.restrictedDelete(searchBlob);
         } else {
             System.out.println("No reason to remove the file.");
