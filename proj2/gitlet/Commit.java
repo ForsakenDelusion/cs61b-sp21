@@ -42,6 +42,7 @@ public class Commit implements Serializable {
         this.branch = readContentsAsString(join(GITLET_REFERENCE,"HEAD"));
         this.parentCommit = getCurrentCommit().getId();
         this.mergeCommit = "null";
+        blobs.putAll(getCommitById(this.parentCommit).getBlobs());
         blobs.putAll(Index.getCurrentIndex().getBlobSet());
         setID();
         saveCommit();
@@ -53,6 +54,7 @@ public class Commit implements Serializable {
         this.branch = readContentsAsString(join(GITLET_REFERENCE,"HEAD"));
         this.parentCommit = getCurrentCommit().getId();
         this.mergeCommit = mergeCommit;
+        blobs.putAll(getCommitById(this.parentCommit).getBlobs());
         blobs.putAll(Index.getCurrentIndex().getBlobSet());
         setID();
         saveCommit();

@@ -100,23 +100,20 @@ public class Repository {
     static void rm(String fileName) {
         Index curIndex = Index.getCurrentIndex();
         File curFile = new File(CWD, fileName);
+        Blob curBlob = Blob.createBlob(fileName);
         Commit curCommit = Commit.getCurrentCommit();
-        if (curFile.exists()) {
-            Blob curBlob = new Blob(fileName);
-            if (!curIndex.getBlobSet().isEmpty()) {
-                curIndex.removeInBlobSet(curFile);
-            } else {
-                if (curCommit.getBlobs().containsKey(curFile)) {
-                    curIndex.removeInBlobSet(curFile);
-                    curIndex.addInDeleteBlobSet(curFile, curBlob);
-                    restrictedDelete(join(CWD, fileName));
-                } else {
-                    System.out.println("No reason to remove the file.");
-                }
-            }
-        } else {
-            curIndex.addInDeleteBlobSet(curFile, curCommit.getBlobs().get(curFile));
+        Map<File, Blob> stageBlobs = curIndex.getBlobSet();
+        Map<File, Blob> trackedBlobs = curCommit.getBlobs();
+        if (stageBlobs.containsKey(curFile)) {
+            curIndex.removeInBlobSet(curFile);
+        } else if (trackedBlobs.containsKey(curFile) && !stageBlobs.containsKey(curFile)) {
+            curIndex.addInDeleteBlobSet(curFile, curBlob);
+            curCommit.removeInBlobs(curFile);
+            curFile.delete();
+        } else if (!stageBlobs.containsKey(curFile) && !trackedBlobs.containsKey(curFile)) {
+            System.out.println("No reason to remove the file.");
         }
+
     }
 
     static void log() {
@@ -267,20 +264,7 @@ public class Repository {
     static Set<File> trackedFiles() {
         Set<File> trackedFileSet = new HashSet<>();
         Commit tempCommit = Commit.getCurrentCommit();
-        while (true) {
-            if (tempCommit != null) {
-                trackedFileSet.addAll(tempCommit.getBlobs().keySet());
-            }
-            String parentCommitId = "null";
-            if (tempCommit != null) {
-                parentCommitId = tempCommit.getParentCommit();
-            }
-            if ("null".equals(parentCommitId)) {
-                break;
-            }
-            tempCommit = Commit.getCommitById(parentCommitId);
-        }
-        return trackedFileSet;
+        return tempCommit.getBlobs().keySet();
     }
 
     static Set<String> untrackedFiles() {
