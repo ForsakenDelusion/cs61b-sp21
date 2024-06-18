@@ -509,19 +509,19 @@ public class Repository {
     }
 
     private static String getString(Blob curCommitBlob, Blob givenCommitBlob) {
-        String curFileContent = null;
+        byte[] curFileContent = null;
         if (curCommitBlob != null) {
             curFileContent = curCommitBlob.getContent();
         } else {
-            curFileContent = "";
+            curFileContent = new byte[0];
         }
-        String givenFileContent = null;
+        byte[] givenFileContent = null;
         if (givenCommitBlob != null) {
             givenFileContent = givenCommitBlob.getContent();
         } else {
-            givenFileContent = "";
+            givenFileContent = new byte[0];
         }
-        return "<<<<<<< HEAD\n" + curFileContent + "\n" + "=======\n" + givenFileContent + "\n" + ">>>>>>>";
+        return "<<<<<<< HEAD\n" + Arrays.toString(curFileContent) + "\n" + "=======\n" + Arrays.toString(givenFileContent) + "\n" + ">>>>>>>";
     }
 
 
