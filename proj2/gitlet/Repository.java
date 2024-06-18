@@ -429,7 +429,7 @@ public class Repository {
 
                 if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
                     String newContent = getString(curCommitBlob, givenCommitBlob);
-                    writeContents(splitCommitFile, newContent);
+                    writeContents(join(CWD, splitCommitFile.getName()), newContent);
                     add(splitCommitFile.getName());
                     flag = true;
                     curCommitMap.remove(splitCommitFile);
@@ -486,7 +486,6 @@ public class Repository {
         if (flag) {
             System.out.println("Encountered a merge conflict.");
         }
-        System.out.println(readContentsAsString(join(CWD, "f.txt")));
         new Commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".", branchId);
     }
 
