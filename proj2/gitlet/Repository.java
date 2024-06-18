@@ -538,14 +538,23 @@ public class Repository {
     }
 
     static boolean areBlobsEqual(Blob curBlob, Blob givenBlob) {
-        String curBlobHash = null;
-        String givenBlobHash = null;
+        String curBlobHash = "null";
+        String givenBlobHash = "null";
         if (curBlob != null && givenBlob != null) {
             curBlobHash = curBlob.getHashId();
             givenBlobHash = givenBlob.getHashId();
             return curBlobHash.equals(givenBlobHash);
+        } else {
+            if (curBlob != null) {
+                curBlobHash = curBlob.getHashId();
+            }
+            }
+            if (givenBlob != null) {
+                givenBlobHash = givenBlob.getHashId();
+            }
+            return curBlobHash.equals(givenBlobHash);
         }
-        return true;
+
     }
 
-}
+
