@@ -337,6 +337,7 @@ public class Repository {
         String branchId = readContentsAsString(join(GITLET_REFERENCE, branch));
         List<String> curCommitList = getCurBranchCommitIdList();
         List<String> givenCommitList = getGivenBranchCommitIdList(branch);
+        List<String> addStageList = new ArrayList<>();
         Commit splitCommit = null;
         Commit curCommit = Commit.getCurrentCommit();
         Commit givenCommit = Commit.getCommitById(readContentsAsString(join(GITLET_REFERENCE, branch)));
@@ -428,7 +429,7 @@ public class Repository {
                 if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
                     String newContent = getString(curCommitBlob, givenCommitBlob);
                     writeContents(splitCommitFile, newContent);
-                    add(splitCommitFile.getName());
+                    addStageList.add(splitCommitFile.getName());
                     flag = true;
                     curCommitMap.remove(splitCommitFile);
                     givenCommitMap.remove(splitCommitFile);
@@ -485,6 +486,9 @@ public class Repository {
             System.out.println("Encountered a merge conflict.");
         }
         new Commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".", branchId);
+        for (String addStage : addStageList) {
+            add(addStage);
+        }
     }
 
     private static String getString(Blob curCommitBlob, Blob givenCommitBlob) {
