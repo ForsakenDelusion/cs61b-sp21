@@ -184,7 +184,7 @@ public class Repository {
         Map<File, Blob> curStagedFiles = curIndex.getBlobSet();
         Map<File, Blob> removeFiles = curIndex.getDeleteBlobs();
         Commit curCommit = Commit.getCurrentCommit();
-        Map<File, Blob> curCommitStagedBlobs = curCommit.getBlobs();
+        Set<File> curCommitStagedBlobs = trackedFiles();
         List<String> cwdFiles = plainFilenamesIn(CWD);
 
         System.out.println("=== Branches ===");
@@ -209,10 +209,10 @@ public class Repository {
 
         System.out.println();
         System.out.println("=== Modifications Not Staged For Commit ===");
-        for (Map.Entry<File, Blob> entry : curCommitStagedBlobs.entrySet()) {
-            String fileName = entry.getKey().getName();
-            File curFile = entry.getKey();
-            Blob fileBlob = entry.getValue();
+        for (File File: curCommitStagedBlobs) {
+            String fileName = File.getName();
+            File curFile = File;
+            Blob fileBlob = Commit.getCurrentCommit().getBlobs().get(File);
             Blob cwdBlob = Blob.createBlob(fileName);
             Map<File, Blob> indexBlobs = curIndex.getBlobSet();
             if (cwdFiles != null && cwdBlob != null) {
@@ -389,7 +389,7 @@ public class Repository {
                             System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                             return;
                         }
-                        restrictedDelete(splitCommitFile);
+                        rm(splitCommitFile.getName());
                         curCommitMap.remove(splitCommitFile);
                         givenCommitMap.remove(splitCommitFile);
                     }
@@ -408,7 +408,7 @@ public class Repository {
                             System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                             return;
                         }
-                        restrictedDelete(splitCommitFile);
+                        rm(splitCommitFile.getName());
                         curCommitMap.remove(splitCommitFile);
                         givenCommitMap.remove(splitCommitFile);
                     }
@@ -423,7 +423,12 @@ public class Repository {
                     givenCommitMap.remove(splitCommitFile);
                 }
 
-                if (areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                if (areBlobsEqual(givenCommitBlob, curCommitBlob)) {
+                    curCommitMap.remove(splitCommitFile);
+                    givenCommitMap.remove(splitCommitFile);
+                }
+
+                if (curCommitBlob == null && areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
                     curCommitMap.remove(splitCommitFile);
                     givenCommitMap.remove(splitCommitFile);
                 }
