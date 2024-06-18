@@ -1,6 +1,9 @@
 package gitlet;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static gitlet.Utils.*;
@@ -504,24 +507,37 @@ public class Repository {
         if (flag) {
             System.out.println("Encountered a merge conflict.");
         }
-
+        System.out.println(readContentsAsString(join(CWD,"f.txt")));
         new Commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".", branchId);
     }
 
     private static String getString(Blob curCommitBlob, Blob givenCommitBlob) {
-        String curFileContent = null;
+        byte[] curFileContent = new byte[0];
         if (curCommitBlob != null) {
-            curFileContent = curCommitBlob.getContent();
+            curFileContent = curCommitBlob.getContent().getBytes(StandardCharsets.UTF_8);
         } else {
-            curFileContent = "";
+            curFileContent = new byte[0];
         }
-        String givenFileContent = null;
+        byte[] givenFileContent = null;
         if (givenCommitBlob != null) {
-            givenFileContent = givenCommitBlob.getContent();
+            givenFileContent = givenCommitBlob.getContent().getBytes(StandardCharsets.UTF_8);
         } else {
-            givenFileContent = "";
+            givenFileContent = new byte[0];
         }
-        return "<<<<<<< HEAD\n" + curFileContent  + "=======\n" + givenFileContent  + ">>>>>>>";
+        byte[] head = "<<<<<<< HEAD\n".getBytes(StandardCharsets.UTF_8);
+        byte[] body = "=======\n".getBytes(StandardCharsets.UTF_8);
+        byte[] feet = ">>>>>>>\n".getBytes(StandardCharsets.UTF_8);
+        ByteArrayOutputStream str = new ByteArrayOutputStream();
+        try {
+            str.write(head);
+            str.write(curFileContent);
+            str.write(body);
+            str.write(givenFileContent);
+            str.write(feet);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return str.toString();
     }
 
 
