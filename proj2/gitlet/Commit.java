@@ -229,15 +229,32 @@ public class Commit implements Serializable {
     static List<String> getCommitList(String commitId) {
         Commit curCommit = getCommitById(commitId);
         List<String> commitList = new ArrayList<>();
-        while(true) {
+        if (Objects.equals(curCommit.getMergeCommit(), "null")) {
+            while(true) {
+                commitList.add(curCommit.getId());
+                // Check if the parent commit ID is a "null" string, and stop the loop if it is
+                String parentCommitId = curCommit.getParentCommit();
+                if ("null".equals(parentCommitId)) {
+                    break;
+                }
+                curCommit = getCommitById(parentCommitId);
+            }
+        } else {
             commitList.add(curCommit.getId());
             // Check if the parent commit ID is a "null" string, and stop the loop if it is
-            String parentCommitId = curCommit.getParentCommit();
-            if ("null".equals(parentCommitId)) {
-                break;
-            }
+            String parentCommitId = curCommit.getMergeCommit();
             curCommit = getCommitById(parentCommitId);
+            while(true) {
+                commitList.add(curCommit.getId());
+                // Check if the parent commit ID is a "null" string, and stop the loop if it is
+                parentCommitId = curCommit.getParentCommit();
+                if ("null".equals(parentCommitId)) {
+                    break;
+                }
+                curCommit = getCommitById(parentCommitId);
+            }
         }
+
         return commitList;
     }
 
