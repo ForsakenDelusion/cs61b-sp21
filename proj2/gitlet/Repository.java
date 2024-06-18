@@ -63,9 +63,9 @@ public class Repository {
                 curIndex.removeInDeleteBlobSet(curFile);
             } else {
                 if (commitBlob != null && !Objects.equals(curBlob.getHashId(), commitBlob.getHashId())) {
-                    curIndex.addInBlobSet(curFile, Blob.createBlob(fileName));
+                    curIndex.addInBlobSet(curFile, curBlob);
                 } else if (commitBlob == null) {
-                    curIndex.addInBlobSet(curFile, Blob.createBlob(fileName));
+                    curIndex.addInBlobSet(curFile, curBlob);
                 }
             }
 
@@ -429,7 +429,7 @@ public class Repository {
 
                 if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
                     String newContent = getString(curCommitBlob, givenCommitBlob);
-                    writeContents(join(CWD, splitCommitFile.getName()), newContent);
+                    writeContents(splitCommitFile, newContent);
                     add(splitCommitFile.getName());
                     flag = true;
                     curCommitMap.remove(splitCommitFile);
