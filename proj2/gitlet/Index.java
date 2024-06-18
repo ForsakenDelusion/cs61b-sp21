@@ -67,9 +67,6 @@ public class Index implements Serializable {
 
     void addInDeleteBlobSet(File file, Blob blob) {
         Index curIndex = getCurrentIndex();
-        if(blob == null){
-            return;
-        }
         curIndex.getDeleteBlobs().put(file, blob);
         curIndex.saveIndex();
     }
