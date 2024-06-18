@@ -504,6 +504,7 @@ public class Repository {
         if (flag) {
             System.out.println("Encountered a merge conflict.");
         }
+        System.out.println(readContentsAsString(join(CWD,"f.txt")));
         new Commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".", branchId);
     }
 
