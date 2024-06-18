@@ -15,7 +15,7 @@ public class Index implements Serializable {
     Map<File, Blob> deleteBlobs;
 
     /** When the Repository.init() be called this constructor will save an empty List in Index */
-    Index(){
+    Index() {
         this.blobs = new HashMap<>();
         this.deleteBlobs = new HashMap<>();
         this.saveIndex();
@@ -31,18 +31,18 @@ public class Index implements Serializable {
         return this.deleteBlobs;
     }
 
-    static Index getCurrentIndex(){
-        return readObject(GITLET_INDEX,Index.class);
+    static Index getCurrentIndex() {
+        return readObject(GITLET_INDEX, Index.class);
     }
 
     /** Serialize the index obj */
     void saveIndex() {
-        writeObject(GITLET_INDEX,this);
+        writeObject(GITLET_INDEX, this);
     }
 
     /** Reset the index */
-    static void resetIndex(){
-        writeObject(GITLET_INDEX,new Index());
+    static void resetIndex() {
+        writeObject(GITLET_INDEX, new Index());
     }
 
     void removeInBlobSet(File file) {
@@ -56,12 +56,12 @@ public class Index implements Serializable {
     }
 
     /** Add a new blob into the blobArray */
-    void addInBlobSet(File file,Blob blob) {
+    void addInBlobSet(File file, Blob blob) {
         Index curIndex = getCurrentIndex();
-        if(blob == null){
+        if (blob == null) {
             return;
         }
-        curIndex.getBlobSet().put(file,blob);
+        curIndex.getBlobSet().put(file, blob);
         curIndex.saveIndex();
     }
 

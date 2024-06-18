@@ -209,10 +209,10 @@ public class Repository {
 
         System.out.println();
         System.out.println("=== Modifications Not Staged For Commit ===");
-        for (File File: curCommitStagedBlobs) {
-            String fileName = File.getName();
-            File curFile = File;
-            Blob fileBlob = Commit.getCurrentCommit().getBlobs().get(File);
+        for (File file: curCommitStagedBlobs) {
+            String fileName = file.getName();
+            File curFile = file;
+            Blob fileBlob = Commit.getCurrentCommit().getBlobs().get(file);
             Blob cwdBlob = Blob.createBlob(fileName);
             Map<File, Blob> indexBlobs = curIndex.getBlobSet();
             if (cwdFiles != null && cwdBlob != null) {
@@ -286,8 +286,8 @@ public class Repository {
 
     static void reset(String commitId) {
         if (checkoutById(commitId)) {
-        writeContents(join(GITLET_REFERENCE, readContentsAsString(join(GITLET_REFERENCE, "HEAD"))), commitId);
-        writeContents(GITLET_HEAD, commitId);
+            writeContents(join(GITLET_REFERENCE, readContentsAsString(join(GITLET_REFERENCE, "HEAD"))), commitId);
+            writeContents(GITLET_HEAD, commitId);
         }
     }
 
@@ -348,7 +348,6 @@ public class Repository {
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
         }
-
 
         for (String curCommitId : curCommitList) {
             if (givenCommitList.contains(curCommitId)) {
@@ -482,7 +481,7 @@ public class Repository {
                 add(givenCommitFile.getName());
             }
 
-            if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
+            if (splitNoExistAndCurGivenDiffer(splitCommitBlob, givenCommitBlob, curCommitBlob)) {
                 String newContent = getString(curCommitBlob, givenCommitBlob);
                 writeContents(givenCommitFile, newContent);
                 add(givenCommitFile.getName());
@@ -490,12 +489,14 @@ public class Repository {
             }
         }
 
-
-
         if (flag) {
             System.out.println("Encountered a merge conflict.");
         }
         new Commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".", branchId);
+    }
+
+    static boolean splitNoExistAndCurGivenDiffer(Blob s, Blob g, Blob c) {
+        return !areBlobsEqual(g, s) && !areBlobsEqual(c, s) && !areBlobsEqual(g, c);
     }
 
     private static String getString(Blob curCommitBlob, Blob givenCommitBlob) {

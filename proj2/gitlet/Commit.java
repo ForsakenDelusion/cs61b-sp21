@@ -39,7 +39,7 @@ public class Commit implements Serializable {
     Commit(String message) {
         this.message = message;
         this.date = dateFormat.format(new Date());
-        this.branch = readContentsAsString(join(GITLET_REFERENCE,"HEAD"));
+        this.branch = readContentsAsString(join(GITLET_REFERENCE, "HEAD"));
         this.parentCommit = getCurrentCommit().getId();
         this.mergeCommit = "null";
         blobs.putAll(getCommitById(this.parentCommit).getBlobs());
@@ -54,10 +54,10 @@ public class Commit implements Serializable {
         saveCommit();
     }
 
-    Commit(String message,String mergeCommit) {
+    Commit(String message, String mergeCommit) {
         this.message = message;
         this.date = dateFormat.format(new Date());
-        this.branch = readContentsAsString(join(GITLET_REFERENCE,"HEAD"));
+        this.branch = readContentsAsString(join(GITLET_REFERENCE, "HEAD"));
         this.parentCommit = getCurrentCommit().getId();
         this.mergeCommit = mergeCommit;
         blobs.putAll(getCommitById(this.parentCommit).getBlobs());
@@ -116,8 +116,8 @@ public class Commit implements Serializable {
     }
 
     /** Save the Commit obj (Persistence) */
-    void saveCommit(){
-        writeObject(join(GITLET_COMMIT,getId()),this);
+    void saveCommit() {
+        writeObject(join(GITLET_COMMIT, getId()), this);
     }
 
     /** Id getter */
@@ -138,7 +138,7 @@ public class Commit implements Serializable {
         vals.add(this.mergeCommit);
         vals.add(this.date);
         vals.add(this.branch);
-        for(Blob b : blobs.values()) {
+        for (Blob b : blobs.values()) {
             vals.add(b.toString());
         }
         this.id = sha1(vals);
@@ -146,7 +146,7 @@ public class Commit implements Serializable {
 
     /** update the HEAD to the given commit */
     static void updateHEAD(Commit commit) {
-        writeContents(GITLET_HEAD,commit.getId());
+        writeContents(GITLET_HEAD, commit.getId());
     }
 
     String getMessage() {
@@ -212,7 +212,7 @@ public class Commit implements Serializable {
     }
 
     /** The log command */
-    static void log(){
+    static void log() {
         Commit tempCommit = getCurrentCommit();
         while (true) {
             printCommit(tempCommit);
@@ -230,7 +230,7 @@ public class Commit implements Serializable {
         Commit curCommit = getCommitById(commitId);
         List<String> commitList = new ArrayList<>();
         if (Objects.equals(curCommit.getMergeCommit(), "null")) {
-            while(true) {
+            while (true) {
                 commitList.add(curCommit.getId());
                 // Check if the parent commit ID is a "null" string, and stop the loop if it is
                 String parentCommitId = curCommit.getParentCommit();
@@ -244,7 +244,7 @@ public class Commit implements Serializable {
             // Check if the parent commit ID is a "null" string, and stop the loop if it is
             String parentCommitId = curCommit.getMergeCommit();
             curCommit = getCommitById(parentCommitId);
-            while(true) {
+            while (true) {
                 commitList.add(curCommit.getId());
                 // Check if the parent commit ID is a "null" string, and stop the loop if it is
                 parentCommitId = curCommit.getParentCommit();
@@ -259,29 +259,29 @@ public class Commit implements Serializable {
     }
 
     /** The global-log command */
-    static void globalLog(){
+    static void globalLog() {
         List<String> files = plainFilenamesIn(GITLET_COMMIT);
         for (String filename : files) {
             printCommit(getCommitById(filename));
         }
     }
 
-    static void find(String message){
+    static void find(String message) {
         List<String> commits = plainFilenamesIn(GITLET_COMMIT);
         int counter = 0;
         for (String filename : commits) {
             if (Objects.equals(getCommitById(filename).getMessage(), message)) {
                 System.out.println(getCommitById(filename).getId());
-                counter ++;
+                counter++;
             }
         }
-        if (counter == 0 ) {
+        if (counter == 0) {
             System.out.println("Found no commit with that message.");
         }
     }
 
     static void updateBranch(String branchName) {
-        writeContents(join(GITLET_REFERENCE,branchName),readContentsAsString(GITLET_HEAD));
+        writeContents(join(GITLET_REFERENCE, branchName), readContentsAsString(GITLET_HEAD));
     }
 
     public static String findCommit(String commitID) {
