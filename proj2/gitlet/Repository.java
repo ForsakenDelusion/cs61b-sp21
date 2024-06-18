@@ -336,8 +336,7 @@ public class Repository {
         if (!readObject(GITLET_INDEX, Index.class).blobs.isEmpty()) {
             System.out.println("You have uncommitted changes.");
             return;
-        }
-        else if (Objects.equals(branch, readContentsAsString(join(GITLET_REFERENCE, "HEAD")))){
+        } else if (Objects.equals(branch, readContentsAsString(join(GITLET_REFERENCE, "HEAD")))) {
             System.out.println("Cannot merge a branch with itself.");
             return;
         } else if (givenCommitList.contains(curCommitList.get(0))) {
@@ -360,6 +359,7 @@ public class Repository {
         if (splitCommit != null) {
             splitCommitMap = splitCommit.getBlobs();
         }
+        String err = "There is an untracked file in the way; delete it, or add and commit it first.";
         if (splitCommitMap != null) {
             for (File splitCommitFile : splitCommitMap.keySet()) {
                 Blob splitCommitBlob = null;
@@ -376,7 +376,7 @@ public class Repository {
                 if (curCommitBlob != null && areBlobsEqual(curCommitBlob, splitCommitBlob)) {
                     if (givenCommitBlob != null && !areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
                         if (untrackedFiles.contains(splitCommitFile.getName())) {
-                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                            System.out.println(err);
                             reset(curCommit.getId());
                             return;
                         }
@@ -386,7 +386,7 @@ public class Repository {
                         givenCommitMap.remove(splitCommitFile);
                     } else if (givenCommitBlob == null && areBlobsEqual(curCommitBlob, splitCommitBlob)) {
                         if (untrackedFiles.contains(splitCommitFile.getName())) {
-                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                            System.out.println(err);
                             reset(curCommit.getId());
                             return;
                         }
@@ -394,10 +394,10 @@ public class Repository {
                         curCommitMap.remove(splitCommitFile);
                         givenCommitMap.remove(splitCommitFile);
                     }
-                } else if(givenCommitBlob !=null && !areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
+                } else if (givenCommitBlob != null && !areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
                     if (curCommitBlob != null && areBlobsEqual(curCommitBlob, splitCommitBlob)) {
                         if (untrackedFiles.contains(splitCommitFile.getName())) {
-                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                            System.out.println(err);
                             reset(curCommit.getId());
                             return;
                         }
@@ -407,7 +407,7 @@ public class Repository {
                         givenCommitMap.remove(splitCommitFile);
                     } else if (curCommitBlob == null && areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
                         if (untrackedFiles.contains(splitCommitFile.getName())) {
-                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                            System.out.println(err);
                             reset(curCommit.getId());
                             return;
                         }
@@ -439,28 +439,28 @@ public class Repository {
 
         }
 
-            for (File curCommitFile : curCommitMap.keySet()) {
-                Blob splitCommitBlob = null;
-                Blob curCommitBlob = null;
-                Blob givenCommitBlob = null;
-                curCommitBlob = curCommitMap.get(curCommitFile);
-                if (splitCommitMap != null) {
-                    splitCommitBlob = splitCommitMap.get(curCommitFile);
-                }
-                givenCommitBlob = givenCommitMap.get(curCommitFile);
-                if (splitCommitBlob == null && givenCommitBlob == null && curCommitBlob != null) {
-                    add(curCommitFile.getName());
-                    givenCommitMap.remove(curCommitFile);
-                }
-
-                if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
-                    String newContent = getString(curCommitBlob, givenCommitBlob);
-                    writeContents(curCommitFile, newContent);
-                    add(curCommitFile.getName());
-                    flag = true;
-                    givenCommitMap.remove(curCommitFile);
-                }
+        for (File curCommitFile : curCommitMap.keySet()) {
+            Blob splitCommitBlob = null;
+            Blob curCommitBlob = null;
+            Blob givenCommitBlob = null;
+            curCommitBlob = curCommitMap.get(curCommitFile);
+            if (splitCommitMap != null) {
+                splitCommitBlob = splitCommitMap.get(curCommitFile);
             }
+            givenCommitBlob = givenCommitMap.get(curCommitFile);
+            if (splitCommitBlob == null && givenCommitBlob == null && curCommitBlob != null) {
+                add(curCommitFile.getName());
+                givenCommitMap.remove(curCommitFile);
+            }
+
+            if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
+                String newContent = getString(curCommitBlob, givenCommitBlob);
+                writeContents(curCommitFile, newContent);
+                add(curCommitFile.getName());
+                flag = true;
+                givenCommitMap.remove(curCommitFile);
+            }
+        }
 
         for (File givenCommitFile : givenCommitMap.keySet()) {
             Blob splitCommitBlob = null;
@@ -473,11 +473,11 @@ public class Repository {
             curCommitBlob = curCommitMap.get(givenCommitFile);
             if (splitCommitBlob == null && givenCommitBlob != null && curCommitBlob == null) {
                 if (untrackedFiles.contains(givenCommitFile.getName())) {
-                    System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                    System.out.println(err);
                     reset(curCommit.getId());
                     return;
                 }
-                checkout(new String[]{"checkout", readContentsAsString(join(GITLET_REFERENCE,branch)),"--",givenCommitFile.getName()});
+                checkout(new String[]{"checkout", readContentsAsString(join(GITLET_REFERENCE, branch)), "--", givenCommitFile.getName()});
                 add(givenCommitFile.getName());
             }
 
@@ -492,7 +492,7 @@ public class Repository {
         if (flag) {
             System.out.println("Encountered a merge conflict.");
         }
-        new Commit("Merged "+branch+" into "+readContentsAsString(join(GITLET_REFERENCE,"HEAD"))+".", branchId);
+        new Commit("Merged " + branch + " into " + readContentsAsString(join(GITLET_REFERENCE, "HEAD")) + ".", branchId);
     }
 
     static boolean splitNoExistAndCurGivenDiffer(Blob s, Blob g, Blob c) {
@@ -548,13 +548,12 @@ public class Repository {
             if (curBlob != null) {
                 curBlobHash = curBlob.getHashId();
             }
-            }
-            if (givenBlob != null) {
-                givenBlobHash = givenBlob.getHashId();
-            }
-            return curBlobHash.equals(givenBlobHash);
         }
+        if (givenBlob != null) {
+            givenBlobHash = givenBlob.getHashId();
+        }
+        return curBlobHash.equals(givenBlobHash);
 
     }
 
-
+}
