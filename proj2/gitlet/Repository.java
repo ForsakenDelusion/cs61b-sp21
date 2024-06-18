@@ -360,7 +360,6 @@ public class Repository {
         if (splitCommit != null) {
             splitCommitMap = splitCommit.getBlobs();
         }
-
         if (splitCommitMap != null) {
             for (File splitCommitFile : splitCommitMap.keySet()) {
                 Blob splitCommitBlob = null;
