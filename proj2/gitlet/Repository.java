@@ -458,6 +458,15 @@ public class Repository {
                 curCommitMap.remove(curCommitFile);
                 givenCommitMap.remove(curCommitFile);
             }
+
+            if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
+                String newContent = getString(curCommitBlob, givenCommitBlob);
+                writeContents(curCommitFile, newContent);
+                add(curCommitFile.getName());
+                flag = true;
+                curCommitMap.remove(curCommitFile);
+                givenCommitMap.remove(curCommitFile);
+            }
         }
 
         for (File givenCommitFile : givenCommitMap.keySet()) {
@@ -476,6 +485,15 @@ public class Repository {
                 }
                 checkout(new String[]{"checkout", readContentsAsString(join(GITLET_REFERENCE,branch)),"--",givenCommitFile.getName()});
                 add(givenCommitFile.getName());
+                curCommitMap.remove(givenCommitFile);
+                givenCommitMap.remove(givenCommitFile);
+            }
+
+            if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
+                String newContent = getString(curCommitBlob, givenCommitBlob);
+                writeContents(givenCommitFile, newContent);
+                add(givenCommitFile.getName());
+                flag = true;
                 curCommitMap.remove(givenCommitFile);
                 givenCommitMap.remove(givenCommitFile);
             }
