@@ -439,7 +439,7 @@ public class Repository {
             }
 
         }
-        if (curCommitMap != null) {
+
             for (File curCommitFile : curCommitMap.keySet()) {
                 Blob splitCommitBlob = null;
                 Blob curCommitBlob = null;
@@ -451,7 +451,6 @@ public class Repository {
                 givenCommitBlob = givenCommitMap.get(curCommitFile);
                 if (splitCommitBlob == null && givenCommitBlob == null && curCommitBlob != null) {
                     add(curCommitFile.getName());
-                    curCommitMap.remove(curCommitFile);
                     givenCommitMap.remove(curCommitFile);
                 }
 
@@ -460,12 +459,9 @@ public class Repository {
                     writeContents(curCommitFile, newContent);
                     add(curCommitFile.getName());
                     flag = true;
-                    curCommitMap.remove(curCommitFile);
                     givenCommitMap.remove(curCommitFile);
                 }
             }
-        }
-
 
         for (File givenCommitFile : givenCommitMap.keySet()) {
             Blob splitCommitBlob = null;
@@ -484,8 +480,6 @@ public class Repository {
                 }
                 checkout(new String[]{"checkout", readContentsAsString(join(GITLET_REFERENCE,branch)),"--",givenCommitFile.getName()});
                 add(givenCommitFile.getName());
-                curCommitMap.remove(givenCommitFile);
-                givenCommitMap.remove(givenCommitFile);
             }
 
             if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
@@ -493,8 +487,6 @@ public class Repository {
                 writeContents(givenCommitFile, newContent);
                 add(givenCommitFile.getName());
                 flag = true;
-                curCommitMap.remove(givenCommitFile);
-                givenCommitMap.remove(givenCommitFile);
             }
         }
 
