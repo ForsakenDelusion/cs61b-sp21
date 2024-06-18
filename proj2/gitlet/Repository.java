@@ -439,31 +439,33 @@ public class Repository {
             }
 
         }
+        if (curCommitMap != null) {
+            for (File curCommitFile : curCommitMap.keySet()) {
+                Blob splitCommitBlob = null;
+                Blob curCommitBlob = null;
+                Blob givenCommitBlob = null;
+                curCommitBlob = curCommitMap.get(curCommitFile);
+                if (splitCommitMap != null) {
+                    splitCommitBlob = splitCommitMap.get(curCommitFile);
+                }
+                givenCommitBlob = givenCommitMap.get(curCommitFile);
+                if (splitCommitBlob == null && givenCommitBlob == null && curCommitBlob != null) {
+                    add(curCommitFile.getName());
+                    curCommitMap.remove(curCommitFile);
+                    givenCommitMap.remove(curCommitFile);
+                }
 
-        for (File curCommitFile : curCommitMap.keySet()) {
-            Blob splitCommitBlob = null;
-            Blob curCommitBlob = null;
-            Blob givenCommitBlob = null;
-            curCommitBlob = curCommitMap.get(curCommitFile);
-            if (splitCommitMap != null) {
-                splitCommitBlob = splitCommitMap.get(curCommitFile);
-            }
-            givenCommitBlob = givenCommitMap.get(curCommitFile);
-            if (splitCommitBlob == null && givenCommitBlob == null && curCommitBlob != null) {
-                add(curCommitFile.getName());
-                curCommitMap.remove(curCommitFile);
-                givenCommitMap.remove(curCommitFile);
-            }
-
-            if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
-                String newContent = getString(curCommitBlob, givenCommitBlob);
-                writeContents(curCommitFile, newContent);
-                add(curCommitFile.getName());
-                flag = true;
-                curCommitMap.remove(curCommitFile);
-                givenCommitMap.remove(curCommitFile);
+                if (!areBlobsEqual(givenCommitBlob, splitCommitBlob) && !areBlobsEqual(curCommitBlob, splitCommitBlob) && !areBlobsEqual(givenCommitBlob, curCommitBlob)) {
+                    String newContent = getString(curCommitBlob, givenCommitBlob);
+                    writeContents(curCommitFile, newContent);
+                    add(curCommitFile.getName());
+                    flag = true;
+                    curCommitMap.remove(curCommitFile);
+                    givenCommitMap.remove(curCommitFile);
+                }
             }
         }
+
 
         for (File givenCommitFile : givenCommitMap.keySet()) {
             Blob splitCommitBlob = null;
