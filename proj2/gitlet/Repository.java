@@ -342,6 +342,7 @@ public class Repository {
             return;
         } else if (givenCommitList.contains(curCommitList.get(0))) {
             System.out.println("Current branch fast-forwarded.");
+            reset(branchId);
             return;
         } else if (curCommitList.contains(givenCommitList.get(0))) {
             System.out.println("Given branch is an ancestor of the current branch.");
