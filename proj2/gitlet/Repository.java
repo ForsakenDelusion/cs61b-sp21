@@ -108,7 +108,7 @@ public class Repository {
             curIndex.removeInBlobSet(curFile);
         } else if (trackedBlobs.containsKey(curFile) && !stageBlobs.containsKey(curFile)) {
             curIndex.addInDeleteBlobSet(curFile, curBlob);
-            curCommit.removeInBlobs(curFile);
+
             curFile.delete();
         } else if (!stageBlobs.containsKey(curFile) && !trackedBlobs.containsKey(curFile)) {
             System.out.println("No reason to remove the file.");

@@ -44,6 +44,12 @@ public class Commit implements Serializable {
         this.mergeCommit = "null";
         blobs.putAll(getCommitById(this.parentCommit).getBlobs());
         blobs.putAll(Index.getCurrentIndex().getBlobSet());
+        Map<File, Blob> deletBlobs = Index.getCurrentIndex().getDeleteBlobs();
+        if (deletBlobs != null) {
+            for (File file : deletBlobs.keySet()) {
+                this.removeInBlobsDontSave(file);
+            }
+        }
         setID();
         saveCommit();
     }
@@ -56,6 +62,10 @@ public class Commit implements Serializable {
         this.mergeCommit = mergeCommit;
         blobs.putAll(getCommitById(this.parentCommit).getBlobs());
         blobs.putAll(Index.getCurrentIndex().getBlobSet());
+        Map<File, Blob> deletBlobs = Index.getCurrentIndex().getDeleteBlobs();
+        for (File file : deletBlobs.keySet()) {
+            this.removeInBlobsDontSave(file);
+        }
         setID();
         saveCommit();
         updateHEAD(this);
@@ -178,6 +188,10 @@ public class Commit implements Serializable {
     void removeInBlobs(File file) {
         this.getBlobs().remove(file);
         this.saveCommit();
+    }
+
+    void removeInBlobsDontSave(File file) {
+        this.getBlobs().remove(file);
     }
 
     /** Formatted output log */
