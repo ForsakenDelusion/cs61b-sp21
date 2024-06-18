@@ -11,16 +11,18 @@ import static gitlet.Utils.*;
 
 public class Blob implements Serializable {
     String fileName;
-    String content;
+    byte[] content;
     String hashId;
 
-    /** content getter */
-    public String getContent() {
+    /**
+     * content getter
+     */
+    public byte[] getContent() {
         return this.content;
     }
 
     /** Blob constructor */
-    public Blob(String fileName, String content) {
+    public Blob(String fileName, byte[] content) {
         this.fileName = fileName;
         this.content = content;
         setID();
@@ -29,7 +31,7 @@ public class Blob implements Serializable {
 
     public Blob(String fileName) {
         this.fileName = fileName;
-        this.content = readContentsAsString(join(CWD, fileName));
+        this.content = readContents(join(CWD, fileName));
         setID();
     }
 
@@ -38,7 +40,7 @@ public class Blob implements Serializable {
     static Blob createBlob(String fileName) {
         File cwdFile = new File(CWD, fileName);
         if(cwdFile.exists()){
-            String content = readContentsAsString(cwdFile);
+            byte[] content = readContents(cwdFile);
             Blob newBlob =  new Blob(fileName,content);
             File blobObj = join(GITLET_OBJECTS,newBlob.getHashId());
             if (!blobObj.exists()) newBlob.saveBlob();
@@ -71,7 +73,7 @@ public class Blob implements Serializable {
     /** Find the corresponding Blob based on the file name of the workspace */
     static Blob findBlobByFileName(String fileName) {
         File cwdFile = new File(CWD,fileName);
-        String content = readContentsAsString(cwdFile);
+        byte[] content = readContents(cwdFile);
         Blob newBlob =  new Blob(fileName,content);
         File blobObj = join(GITLET_OBJECTS,newBlob.getHashId());
         if (blobObj.exists())  return readObject(blobObj,Blob.class);
