@@ -268,7 +268,7 @@ public class Repository {
             if (tempCommit != null) {
                 trackedFileSet.addAll(tempCommit.getBlobs().keySet());
             }
-            String parentCommitId = null;
+            String parentCommitId = "null";
             if (tempCommit != null) {
                 parentCommitId = tempCommit.getParentCommit();
             }
@@ -298,17 +298,18 @@ public class Repository {
     }
 
     static void reset(String commitId) {
-        checkoutById(commitId);
+        if (checkoutById(commitId)) {
         writeContents(join(GITLET_REFERENCE, readContentsAsString(join(GITLET_REFERENCE, "HEAD"))), commitId);
         writeContents(GITLET_HEAD, commitId);
+        }
     }
 
-    static void checkoutById(String commitId) {
+    static boolean checkoutById(String commitId) {
         Index.resetIndex();
         Commit curCommit = Commit.getCommitById(commitId);
         if (curCommit == null) {
             System.out.println("No commit with that id exists.");
-            return;
+            return false;
         }
         Map<File, Blob> curBlobs = curCommit.getBlobs();
         Set<String> unTrackedFiles = untrackedFiles();
@@ -325,6 +326,7 @@ public class Repository {
                 restrictedDelete(trackedFile);
             }
         }
+        return true;
     }
 
     public static void merge(String branch) {
