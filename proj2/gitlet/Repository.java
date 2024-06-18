@@ -434,6 +434,7 @@ public class Repository {
                     flag = true;
                     curCommitMap.remove(splitCommitFile);
                     givenCommitMap.remove(splitCommitFile);
+                    System.out.println(readContentsAsString(join(CWD, splitCommitFile.getName())));
                 }
 
                 if (areBlobsEqual(givenCommitBlob, splitCommitBlob)) {
@@ -506,7 +507,7 @@ public class Repository {
                 curFileContent + "\n" +
                 "=======\n" +
                 givenFileContent + "\n" +
-                ">>>>>>>\n";
+                ">>>>>>>";
     }
 
 
