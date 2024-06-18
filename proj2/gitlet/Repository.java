@@ -506,7 +506,7 @@ public class Repository {
                 curFileContent + "\n" +
                 "=======\n" +
                 givenFileContent + "\n" +
-                ">>>>>>>";
+                ">>>>>>>\n";
     }
 
 
